@@ -57,7 +57,11 @@ commandslash.push(new SlashCommandBuilder()
     .addStringOption(option =>
         option.setName('message')
             .setDescription('Le message à envoyer')
-            .setRequired(true)));
+            .setRequired(true)
+            .setMinLength(1)
+            .setMaxLength(250)
+    ));
+
 
 commandslash.push(new SlashCommandBuilder()
     .setName('addchannel')
@@ -183,7 +187,7 @@ client.on('interactionCreate', interaction => {
                 //console.log("requesting page")
                 const msgtosend = interaction.options.getString('message') ?? 'No message provided';
                 var opts = {
-                    url: encodeURI(url + `message=${msgtosend.split(" ").join("§")}&sender=${interaction.user.username.split(" ").join("_")}`),
+                    url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=${interaction.user.username.split(" ").join("_").substring(0, 23)}`),
                     timeout: timeoutInMilliseconds,
                     encoding: "utf-8"
                 }
