@@ -1,0 +1,28 @@
+{
+  "name": "chalinebot",
+  "version": "2.0.0",
+  "description": "Bot discord Chaline version 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MagicTINTIN/ChalineBotv2.git"
+  },
+  "keywords": [
+    "cat",
+    "bot",
+    "discord",
+    "chaline"
+  ],
+  "author": "MagicTINTIN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MagicTINTIN/ChalineBotv2/issues"
+  },
+  "homepage": "https://github.com/MagicTINTIN/ChalineBotv2#readme",
+  "dependencies": {
+    "discord.js": "^14.5.0"
+  }
+}

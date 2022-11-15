@@ -1,0 +1,9 @@
+{
+    "init":{
+        "startInitMsg":"Starting MicaSenderBot...\n‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾",
+        "endInitMsg":"___________________\nMSB is ready"
+    },
+    "errors":{
+        "mainMsg":"📌 il y a un bug dans la matrice"
+    }
+}
