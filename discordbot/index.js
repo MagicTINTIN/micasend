@@ -12,13 +12,13 @@ const initcfg = require("./config/admin/init.json");
 var channelsList = require("./config/public/channelsChat.json");
 var settings = require("./config/admin/settings.json")
 
-const { Client, Partials, SlashCommandBuilder, REST, Routes, Permissions } = require('discord.js');
+const { Client, Partials, SlashCommandBuilder, REST, Routes, Permissions, GuildExplicitContentFilter, EmbedBuilder } = require('discord.js');
 // Client creation and export
 const client = new Client({
     intents: initcfg.intents,
     partials: initcfg.partials
 });
-const clientId = "1041841555729821707";
+const clientId = initcfg.idbot;
 exports.client = client;
 
 // functions
@@ -39,7 +39,12 @@ function arrayRemove(arr, value) {
         return ele != value;
     });
 }
-
+function convertToReadable(string) {
+    string = string.split("&quot;").join('"')
+    return string.replace(/&#(?:x([\da-f]+)|(\d+));/ig, function (_, hex, dec) {
+        return String.fromCharCode(dec || +('0x' + hex))
+    })
+}
 
 // Slash commands
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
@@ -93,7 +98,61 @@ const timeoutInMilliseconds = 10 * 1000
 // when Bot logged in Discord
 client.once('ready', () => {
     setInterval(() => {
+        var opts = {
+            url: encodeURI(url + `getmsg=json`),
+            timeout: timeoutInMilliseconds,
+            encoding: "utf-8"
+        }
+        request(opts, function (err, res, body) {
+            if (err) {
+                console.dir(err)
+                return
+            }
+            //console.log('status code: ' + statusCode)
+            const listOfMessages = JSON.parse(body)
+            for (const channelid in channelsList) {
+                try {
+                    const channeltosend = client.channels.cache.get(channelid);
+                    if (channelsList[channelid].sendMsgInIt == 1 && channeltosend) {
 
+                        var endactu = false;
+                        var msgNb = listOfMessages.length - 1;
+                        var msgtosend = []
+                        // messages are sorted in reverse
+                        while (!endactu && msgNb >= 0) {
+                            if (Date.parse(listOfMessages[msgNb].date_time) > channelsList[channelid].lastmsg)
+                                msgtosend.push(listOfMessages[msgNb])
+                            else
+                                endactu = true
+                            msgNb--;
+                        }
+                        // messages are send in correct order
+                        for (let msgantinb = msgtosend.length - 1; msgantinb >= 0; msgantinb--) {
+                            const embed = new EmbedBuilder()
+                                .setAuthor({ name: "\u200B" + msgtosend[msgantinb].sender.substring(0, 200) })
+                                .setDescription("\u200B" + convertToReadable(msgtosend[msgantinb].content.substring(0, 4000)).split("§").join(" "))
+
+                            if (true)
+                                embed.setColor(0xccaf13)
+                            if (true)
+                                embed.setFooter({ text: "⚠️ La certification de l'utilisateur n'a pas pu être vérifiée" }); // sent by a bot or by terminal
+                            try {
+                                channeltosend.send({ embeds: [embed] });
+                            } catch (error) {
+                                console.log("Ce channel n'a pas l'air de fonctionner : " + channelid);
+                            }
+                        }
+                        if (msgtosend.length > 0) {
+                            channelsList[channelid].lastmsg = Date.parse(msgtosend[msgtosend.length - 1].date_time) + 1
+                            updatecfg(`./config/public/channelsChat.json`, channelsList)
+                        }
+                    }
+                } catch (error) {
+                    console.log("Ce channel n'a pas l'air d'exister : " + channelid);
+                }
+
+            }
+        })
     }, settings.refreshtime);
 
     setInterval(() => {
@@ -121,20 +180,20 @@ client.on('interactionCreate', interaction => {
     if (interaction.isCommand()) {
         try {
             if (interaction.commandName === 'send') {
-                console.log("requesting page")
+                //console.log("requesting page")
                 const msgtosend = interaction.options.getString('message') ?? 'No message provided';
                 var opts = {
-                    url: url + `message=${msgtosend.split(" ").join("§")}&sender=${interaction.user.username.split(" ").join("_")}`,
+                    url: encodeURI(url + `message=${msgtosend.split(" ").join("§")}&sender=${interaction.user.username.split(" ").join("_")}`),
                     timeout: timeoutInMilliseconds,
                     encoding: "utf-8"
                 }
                 request(opts, function (err, res, body) {
                     if (err) {
                         console.dir(err)
-                        return
+                        return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
                     }
                     var statusCode = res.statusCode
-                    console.log('status code: ' + statusCode)
+                    console.log(`Message sent by ${interaction.user.id}`, 'status code: ' + statusCode)
                 })
                 return interaction.reply({ content: "Récapitulatif du message envoyé : \n```" + msgtosend + "```", ephemeral: true });
 
@@ -148,9 +207,10 @@ client.on('interactionCreate', interaction => {
                 if (interaction.user.id != "444579657279602699" && interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
                     return interaction.reply({ content: "Tu n'es pas modérateur sur ce serveur !", ephemeral: true });
 
-                if (channelsList.includes(interaction.channel.id))
-                    return interaction.reply({ content: "Le salon a déjà été ajouté", ephemeral: true });
-                channelsList.push(interaction.channel.id)
+                channelsList[interaction.channel.id] = {
+                    sendMsgInIt: 1,
+                    lastmsg: Date.now()
+                };
                 updatecfg(`./config/public/channelsChat.json`, channelsList)
                 interaction.reply({ content: `Le salon <#${interaction.channel.id}> a bien été ajouté`, ephemeral: true });
             }
@@ -159,9 +219,9 @@ client.on('interactionCreate', interaction => {
                 if (interaction.user.id != "444579657279602699" && interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
                     return interaction.reply({ content: "Tu n'es pas modérateur sur ce serveur !", ephemeral: true });
 
-                channelsList = arrayRemove(channelsList, interaction.channel.id)
+                channelsList[interaction.channel.id].sendMsgInIt = 0;
                 updatecfg(`./config/public/channelsChat.json`, channelsList)
-                interaction.reply({ content: `Le salon <#${interaction.channel.id}> a bien été supprimé`, ephemeral: true });
+                interaction.reply({ content: `Le salon <#${interaction.channel.id}> a bien été supprimé de la liste des mises à jour`, ephemeral: true });
             }
         } catch (error) {
             interaction.reply({ content: "Une erreur est survenue lol", ephemeral: true });
