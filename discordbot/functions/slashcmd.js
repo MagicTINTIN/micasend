@@ -2,6 +2,7 @@
 const { SlashCommandBuilder, REST, Routes, Permissions } = require('discord.js');
 const reqFcts = require('./reqFcts');
 const saver = require('./saver');
+const fs = require('fs');
 
 module.exports = {
     initSlash: function (token, clientId) {
@@ -20,8 +21,11 @@ module.exports = {
                     .setMinLength(1)
                     .setMaxLength(250))
             .addBooleanOption(option =>
-                option.setName('incognito')
-                    .setDescription('Poster en incognito ou non [False par défaut]')));
+                option.setName('noncertified')
+                    .setDescription('Poster en non certifié ou non [False par défaut]'))
+            .addBooleanOption(option =>
+                option.setName('unlinked')
+                    .setDescription('[Compte liés uniquement] En ne liant pas votre compte Discord [False par défaut]')));
 
 
         commandslash.push(new SlashCommandBuilder()
@@ -39,6 +43,22 @@ module.exports = {
                 option.setName('slowmode')
                     .setRequired(true)
                     .setDescription('Mettre en slowmode ou non')));
+
+        commandslash.push(new SlashCommandBuilder()
+            .setName('linkaccount')
+            .setDescription("Permet de lier votre compte discord avec votre compte MicaSend")
+            .addStringOption(option =>
+                option.setName('pseudo')
+                    .setDescription('Le pseudo exact de votre compte MicaSend')
+                    .setRequired(true)
+                    .setMinLength(1)
+                    .setMaxLength(25))
+            .addStringOption(option =>
+                option.setName('token')
+                    .setDescription("Le TOKEN exact de votre compte MicaSend ! Ecrivez none pour délier le compte")
+                    .setRequired(true)
+                    .setMinLength(1)
+                    .setMaxLength(250)));
 
         commandslashjson = commandslash.map(command => command.toJSON());
 
@@ -66,11 +86,21 @@ module.exports = {
 
         var channelsList = require("../config/public/channelsChat.json");
         try {
+            var linkedaccounts;
+            linkedaccounts = JSON.parse(fs.readFileSync(`../../micasendCfgLA.json`))
+
+            if (!linkedaccounts || linkedaccounts == "" || linkedaccounts == null)
+                linkedaccounts = {}
+
             // send message
             if (interaction.commandName === 'send') {
                 const msgtosend = interaction.options.getString('message') ?? 'No message provided';
-                if (interaction.options.getBoolean('incognito') && interaction.options.getBoolean('incognito') == true) {
+                if ((interaction.options.getBoolean('noncertified') && interaction.options.getBoolean('noncertified') == true)) {
                     if (reqFcts.sendMsg(interaction.user.username, msgtosend, true) == 1)
+                        return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
+                }
+                else if (linkedaccounts[interaction.user.id] && linkedaccounts[interaction.user.id].token != "none" && !(interaction.options.getBoolean('unlinked') && interaction.options.getBoolean('unlinked') == true)) {
+                    if (reqFcts.sendMsg(linkedaccounts[interaction.user.id].pseudo, msgtosend, linkedaccounts[interaction.user.id].token) == 1)
                         return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
                 }
                 else
@@ -108,6 +138,17 @@ module.exports = {
 
                 saver.updatecfg(`./config/admin/slowmode.json`, { on: interaction.options.getBoolean('slowmode') })
                 interaction.reply({ content: `Le bot a changé son slowmode pour : ${interaction.options.getBoolean('slowmode')}`, ephemeral: true });
+            }
+            else if (interaction.commandName === 'linkaccount') {
+
+
+                linkedaccounts[interaction.user.id] = {
+                    pseudo: interaction.options.getString('pseudo'),
+                    token: interaction.options.getString('token')
+                }
+
+                saver.updatecfg(`../../micasendCfgLA.json`, linkedaccounts)
+                interaction.reply({ content: `Votre compte discord a bien été lié à : ${interaction.options.getString('pseudo')}`, ephemeral: true });
             }
         } catch (error) {
             interaction.reply({ content: "Une erreur est survenue lol", ephemeral: true });

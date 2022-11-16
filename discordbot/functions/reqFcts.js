@@ -60,17 +60,24 @@ module.exports = {
                             // zone easter egg
                             if (isCertified && isCertified == 1) {
                                 embed.setColor(0xdf1010)
-                                embed.setFooter({ text: "✅ Utilisateur certifié par lui même | " + msgtosend[msgantinb].date_time });
+                                embed.setFooter({ text: "✅ Utilisateur certifié par Elon lui même | " + msgtosend[msgantinb].date_time });
                             }
                             else if (isCertified && isCertified == 2) {
                                 embed.setColor(0xdf1010)
                                 embed.setFooter({ text: "✅ Utilisateur certifié Melon Musk | " + msgtosend[msgantinb].date_time });
                             }
                             else if (isCertified && isCertified == 3) {
-                                embed.setColor(0x1091df)
-                                embed.setFooter({ text: "✅ Utilisateur certifié [BOT]| " + msgtosend[msgantinb].date_time });
+                                var userbybot = msgtosend[msgantinb].content.split("§")[0] + " (from BOT)"
+                                var msgbyusr = other.convertToReadable(msgtosend[msgantinb].content).split("§")
+                                msgbyusr.splice(0, 2)
+                                msgbyusr = msgbyusr.join(" ")
+                                    .substring(0, 4000)
+                                embed.setColor(0x7cee72)
+                                    .setFooter({ text: "✅ Utilisateur certifié [BOT]| " + msgtosend[msgantinb].date_time })
+                                    .setAuthor({ name: "\u200B" + other.convertToReadable(userbybot.substring(0, 200)) })
+                                    .setDescription("\u200B" + msgbyusr)
                             }
-
+                            // x1091df for mods
 
                             try {
                                 channeltosend.send({ embeds: [embed] });
@@ -93,11 +100,19 @@ module.exports = {
 
 
     // request to send message
-    sendMsg: function (sender, msgtosend, incognito = false) {
-        if (!incognito) {
+    sendMsg: function (sender, msgtosend, token = false) {
+        if (!token || token == false) {
             msgtosend = `${sender.split(" ").join("_").substring(0, 23)} : ${msgtosend}`
             var opts = {
                 url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=Bot&token=${process.env.MSTKBOT}`),
+                timeout: timeoutInMilliseconds,
+                encoding: "utf-8"
+            }
+        }
+        else if (token && token != false && token != true) {
+            msgtosend = `${sender.split(" ").join("_").substring(0, 23)} : ${msgtosend}`
+            var opts = {
+                url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=${sender}&token=${token}`),
                 timeout: timeoutInMilliseconds,
                 encoding: "utf-8"
             }
