@@ -11,6 +11,7 @@ var settings = require("./config/admin/settings.json")
 const { Client, Partials, SlashCommandBuilder, REST, Routes, Permissions, GuildExplicitContentFilter, EmbedBuilder } = require('discord.js');
 const reqFcts = require("./functions/reqFcts");
 const slashcmd = require("./functions/slashcmd");
+const fs = require('fs');
 
 // Client creation and export
 const client = new Client({
@@ -22,13 +23,31 @@ exports.client = client;
 
 slashcmd.initSlash(process.env.TOKEN, clientId)
 
+function checkMsg(compteur) {
+    var isSlow = JSON.parse(fs.readFileSync(`./config/admin/slowmode.json`))
+    if (isSlow.on && isSlow.on == true && compteur < 12) {
+        compteur++
+        //console.log("skip slow");
+        return compteur
+    }
+    else {
+
+        reqFcts.actuMsg(client)
+        return 0;
+    }
+}
+
 // when Bot logged in Discord
 client.once('ready', () => {
-    reqLoop = setInterval(() => {
-        reqFcts.actuMsg(client)
-    }, settings.refreshtime);
 
+    var compteur = 0
+
+    reqLoop = setInterval(() => {
+        checkMsg(compteur)
+    }, settings.refreshtime);
+    client.user.setActivity("MicaSenderBot restarting", { type: 'PLAYING' });
     statusLoop = setInterval(() => {
+
         statustype = Math.floor(Math.random() * 4) + 1;
         if (statustype === 1) {
             client.user.setActivity("MICASEND !", { type: 'LISTENING' });
@@ -41,7 +60,6 @@ client.once('ready', () => {
     console.log(debugmsg.init.endInitMsg);
 });
 
-// Prevents bot from crash and getting error information
 process.on('uncaughtException', function (err) {
     console.error(err);
 

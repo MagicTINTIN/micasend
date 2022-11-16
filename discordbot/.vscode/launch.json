@@ -14,7 +14,7 @@
             "program": "${workspaceFolder}/index.js"
         },
         {
-            "command": "TOKEN=$( cat ../../tkmicasend ) && export TOKEN && node ./index.js",
+            "command": "TOKEN=$( cat ../../tkmicasend ) && MSTKBOT=$( cat ../../mstkbot ) && export TOKEN && export MSTKBOT && node ./index.js",
             "name": "Debug",
             "request": "launch",
             "type": "node-terminal"

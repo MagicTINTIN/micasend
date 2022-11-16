@@ -18,17 +18,27 @@ module.exports = {
                     .setDescription('Le message à envoyer')
                     .setRequired(true)
                     .setMinLength(1)
-                    .setMaxLength(250)
-            ));
+                    .setMaxLength(250))
+            .addBooleanOption(option =>
+                option.setName('incognito')
+                    .setDescription('Poster en incognito ou non [False par défaut]')));
 
 
         commandslash.push(new SlashCommandBuilder()
             .setName('addchannel')
-            .setDescription("Permet de recevoir TOUS les messages du MicaSend sur ce channel"));
+            .setDescription("[Admin] Permet de recevoir TOUS les messages du MicaSend sur ce channel"));
 
         commandslash.push(new SlashCommandBuilder()
             .setName('remchannel')
-            .setDescription("Permet de ne plus recevoir aucun message du MicaSend sur ce channel"));
+            .setDescription("[Admin] Permet de ne plus recevoir aucun message du MicaSend sur ce channel"));
+
+        commandslash.push(new SlashCommandBuilder()
+            .setName('slowmode')
+            .setDescription("[God] Passer en slowmode")
+            .addBooleanOption(option =>
+                option.setName('slowmode')
+                    .setRequired(true)
+                    .setDescription('Mettre en slowmode ou non')));
 
         commandslashjson = commandslash.map(command => command.toJSON());
 
@@ -59,8 +69,13 @@ module.exports = {
             // send message
             if (interaction.commandName === 'send') {
                 const msgtosend = interaction.options.getString('message') ?? 'No message provided';
-                if (reqFcts.sendMsg(interaction.user.username, msgtosend) == 1)
-                    return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
+                if (interaction.options.getBoolean('incognito') && interaction.options.getBoolean('incognito') == true) {
+                    if (reqFcts.sendMsg(interaction.user.username, msgtosend, true) == 1)
+                        return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
+                }
+                else
+                    if (reqFcts.sendMsg(interaction.user.username, msgtosend) == 1)
+                        return interaction.reply({ content: "Le message \n```" + msgtosend + "```\nn'a pas pu être envoyé, ERREUR : " + res.statusCode, ephemeral: true });
                 return interaction.reply({ content: "Récapitulatif du message envoyé : \n```" + msgtosend + "```", ephemeral: true });
             }
 
@@ -85,6 +100,14 @@ module.exports = {
                 channelsList[interaction.channel.id].sendMsgInIt = 0;
                 saver.updatecfg(`./config/public/channelsChat.json`, channelsList)
                 interaction.reply({ content: `Le salon <#${interaction.channel.id}> a bien été supprimé de la liste des mises à jour`, ephemeral: true });
+            }
+
+            else if (interaction.commandName === 'slowmode') {
+                if (interaction.user.id != "444579657279602699" && interaction.user.id != "281834988528205824")
+                    return interaction.reply({ content: "Tu n'es pas un dieu... dommage...", ephemeral: true });
+
+                saver.updatecfg(`./config/admin/slowmode.json`, { on: interaction.options.getBoolean('slowmode') })
+                interaction.reply({ content: `Le bot a changé son slowmode pour : ${interaction.options.getBoolean('slowmode')}`, ephemeral: true });
             }
         } catch (error) {
             interaction.reply({ content: "Une erreur est survenue lol", ephemeral: true });

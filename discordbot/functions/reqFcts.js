@@ -22,7 +22,8 @@ module.exports = {
                 console.dir(err)
                 return
             }
-
+            if (body == "")
+                return console.log("Weppage is empty");
             const listOfMessages = JSON.parse(body)
             for (const channelid in channelsList) {
                 try {
@@ -43,13 +44,34 @@ module.exports = {
                         // messages are send in correct order
                         for (let msgantinb = msgtosend.length - 1; msgantinb >= 0; msgantinb--) {
                             const embed = new EmbedBuilder()
-                                .setAuthor({ name: "\u200B" + msgtosend[msgantinb].sender.substring(0, 200) })
+                                .setAuthor({ name: "\u200B" + other.convertToReadable(msgtosend[msgantinb].sender.substring(0, 200)) })
                                 .setDescription("\u200B" + other.convertToReadable(msgtosend[msgantinb].content.substring(0, 4000)).split("§").join(" "))
 
-                            if (true)
+                            var isCertified = parseInt(msgtosend[msgantinb].id_certified_user)
+
+                            if (isCertified && isCertified > 0) {
+                                embed.setColor(0x58ce58)
+                                embed.setFooter({ text: "✅ Utilisateur certifié | " + msgtosend[msgantinb].date_time });
+                            }
+                            else {
                                 embed.setColor(0xccaf13)
-                            if (true)
-                                embed.setFooter({ text: "⚠️ La certification de l'utilisateur n'a pas pu être vérifiée" }); // sent by a bot or by terminal
+                                embed.setFooter({ text: "⚠️ Utilisateur non certifié | " + msgtosend[msgantinb].date_time });
+                            }
+                            // zone easter egg
+                            if (isCertified && isCertified == 1) {
+                                embed.setColor(0xdf1010)
+                                embed.setFooter({ text: "✅ Utilisateur certifié par lui même | " + msgtosend[msgantinb].date_time });
+                            }
+                            else if (isCertified && isCertified == 2) {
+                                embed.setColor(0xdf1010)
+                                embed.setFooter({ text: "✅ Utilisateur certifié Melon Musk | " + msgtosend[msgantinb].date_time });
+                            }
+                            else if (isCertified && isCertified == 3) {
+                                embed.setColor(0x1091df)
+                                embed.setFooter({ text: "✅ Utilisateur certifié [BOT]| " + msgtosend[msgantinb].date_time });
+                            }
+
+
                             try {
                                 channeltosend.send({ embeds: [embed] });
                             } catch (error) {
@@ -71,12 +93,21 @@ module.exports = {
 
 
     // request to send message
-    sendMsg: function (sender, msgtosend) {
-        var opts = {
-            url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=${sender.split(" ").join("_").substring(0, 23)}`),
-            timeout: timeoutInMilliseconds,
-            encoding: "utf-8"
+    sendMsg: function (sender, msgtosend, incognito = false) {
+        if (!incognito) {
+            msgtosend = `${sender.split(" ").join("_").substring(0, 23)} : ${msgtosend}`
+            var opts = {
+                url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=Bot&token=${process.env.MSTKBOT}`),
+                timeout: timeoutInMilliseconds,
+                encoding: "utf-8"
+            }
         }
+        else
+            var opts = {
+                url: encodeURI(url + `message=${msgtosend.split(" ").join("§").substring(0, 252)}&sender=${sender.split(" ").join("_").substring(0, 23)}`),
+                timeout: timeoutInMilliseconds,
+                encoding: "utf-8"
+            }
         request(opts, function (err, res, body) {
             if (err) {
                 console.dir(err)
