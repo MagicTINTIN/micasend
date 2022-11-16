@@ -24,17 +24,7 @@ exports.client = client;
 slashcmd.initSlash(process.env.TOKEN, clientId)
 
 function checkMsg(compteur) {
-    var isSlow = JSON.parse(fs.readFileSync(`./config/admin/slowmode.json`))
-    if (isSlow.on && isSlow.on == true && compteur < 12) {
-        compteur++
-        //console.log("skip slow");
-        return compteur
-    }
-    else {
 
-        reqFcts.actuMsg(client)
-        return 0;
-    }
 }
 
 // when Bot logged in Discord
@@ -43,7 +33,15 @@ client.once('ready', () => {
     var compteur = 0
 
     reqLoop = setInterval(() => {
-        checkMsg(compteur)
+        var isSlow = JSON.parse(fs.readFileSync(`./config/admin/slowmode.json`))
+        if (isSlow.on && isSlow.on == true && compteur < 12) {
+            compteur++
+            //console.log("skip slow nb " + compteur);
+        }
+        else {
+            reqFcts.actuMsg(client)
+            compteur = 0;
+        }
     }, settings.refreshtime);
     client.user.setActivity("MicaSenderBot restarting", { type: 'PLAYING' });
     statusLoop = setInterval(() => {
