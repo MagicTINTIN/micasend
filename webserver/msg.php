@@ -48,7 +48,7 @@ if(isset($_GET['getmsg']) AND !empty($_GET['getmsg'])) {
 			$requser = $db->prepare("SELECT id, rank FROM user WHERE id = ?");
 		    $requser->execute(array($result[$i]["id_certified_user"]));
 		    $r = $requser->fetch();
-		    if($r[1] > 0) {
+		    if(!empty($r) && $r[1] > 0) {
 		    	if($r[1] == 15) {
 		    		echo "\\033[37m [\\033[31mAdmin\\033[37m]";
 		    	}
@@ -150,10 +150,12 @@ if(isset($_GET['getmsg']) AND !empty($_GET['getmsg'])) {
 		for($i=0; $i<count($result); $i++) {
 			$requser = $db->prepare("SELECT rank FROM user WHERE id = ?");
 		    $requser->execute(array($result[$i]["id_certified_user"]));
-		    $r = ($requser->fetch())[0];
+		    $r = ($requser->fetch());
 		    if(empty($r)) {
 		    	$r=0;
-		    }
+		    } else {
+				$r = $r[0];
+			}
 			echo '{"id":"'.$result[$i]["id"].'", "content":"'.str_replace('&quot;', '\"',$result[$i]["content"]).'", "sender":"'.str_replace('&quot;', '\"',$result[$i]["sender"]).'", "date_time":"'.$result[$i]["date_time"].'", "id_certified_user":"'.$result[$i]["id_certified_user"].'", "rank":"'.$r.'"}';
 			if($i < (count($result)-1)) {
 				echo ",";
