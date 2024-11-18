@@ -1,5 +1,5 @@
 <?php
-include "index.php";
+include "db.php";
 // http://127.0.0.1/micasend/web/msg.php?message=lol&sender=test
 if(isset($_GET['message']) AND !empty($_GET['message']) AND isset($_GET['sender']) AND !empty($_GET['sender']))
 {

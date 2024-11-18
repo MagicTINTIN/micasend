@@ -1,5 +1,5 @@
 <?php
-include "index.php";
+include "db.php";
 
 // exemple : 
 // adduser.php?insert=lenomducompte&rank=0&elon=quelquechose_ici_implique_elon_certif&adminpseudo=Rubiks&admintoken=1234

@@ -1,5 +1,5 @@
 <?php
-include "index.php";
+include "db.php";
 
 
 //ptite fonction généré par chatGPT qui prend en entrée une variable $cases = array("x","x"," "...)

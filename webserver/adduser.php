@@ -1,5 +1,5 @@
 <?php
-include "index.php";
+include "db.php";
 
 function RandomString()
 {

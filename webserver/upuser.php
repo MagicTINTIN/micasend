@@ -1,5 +1,5 @@
 <?php
-include "index.php";
+include "db.php";
 
 if(isset($_GET['user']) AND !empty($_GET['user']) AND isset($_GET['column']) AND !empty($_GET['column']) AND isset($_GET['value']) AND !empty($_GET['value']) AND isset($_GET['adminpseudo']) AND !empty($_GET['adminpseudo']) AND isset($_GET['admintoken']) AND !empty($_GET['admintoken']))
 {

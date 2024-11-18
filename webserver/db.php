@@ -7,5 +7,5 @@ function read_password()
     fclose($file);
     return trim($password);
 }
-$db = new PDO('mysql:host=127.0.0.1;dbname=micasend','root', read_password());
+$db = new PDO('mysql:host=127.0.0.1;dbname=micasend','user', read_password());
 ?>
