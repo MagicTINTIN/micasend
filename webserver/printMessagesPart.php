@@ -6,13 +6,13 @@ $req = $db->query("SELECT * FROM msg ORDER BY id DESC LIMIT 50");
 $result = $req->fetchAll(PDO::FETCH_ASSOC);
 $result = array_reverse($result);
 
-for ($i = 0; $i < count($result); $i++) {
+foreach (array_reverse($result) as $key => $value) {
     //foreach message:
     $requser = $db->prepare("SELECT id, rank FROM user WHERE id = ?");
-    $requser->execute(array($result[$i]["id_certified_user"]));
+    $requser->execute(array($value["id_certified_user"]));
     $r = $requser->fetch();
 
-    echo "<div class=\"message\" id=\"msgN" . $result[$i]["id"] . "\"><span class=\"msgAuthor ";
+    echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\"><span class=\"msgAuthor ";
     if ($r[1] > 0) {
         if ($r[1] == 15) {
             echo "msgAuthAdmin" . "\">" . "<span class=\"msgAuthorBadge\">ADMIN</span> " ;
@@ -29,7 +29,7 @@ for ($i = 0; $i < count($result); $i++) {
     } else {
         echo "msgAuthNormal" . "\">" . "" ;
     }
-    echo $result[$i]["sender"] . "</span><span class=\"msgContent\">";
-    echo htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $result[$i]["content"])));
-    echo "</span><span class=\"msgDatetime\">" . $result[$i]["date_time"] . "</span></div>";
+    echo $value["sender"] . "</span><span class=\"msgContent\">";
+    echo htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $value["content"])));
+    echo "</span><span class=\"msgDatetime\">" . $value["date_time"] . "</span></div>";
 }

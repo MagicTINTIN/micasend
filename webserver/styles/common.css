@@ -261,6 +261,9 @@ footer div span {
     width: 100vw;
     padding: 5px;
     overflow-y: auto;
+
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .message {
