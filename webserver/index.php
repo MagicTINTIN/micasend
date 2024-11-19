@@ -1,5 +1,5 @@
 <?php session_start();
-// include_once("db.php");
+include_once("db.php");
 include_once("utils.php");
 
 if (isset($_POST["connect"]) && isset($_POST["username"])) {
@@ -12,6 +12,35 @@ if (isset($_POST["token"])) {
 
 if (isset($_POST["disconnect"])) {
     disconnect();
+}
+
+if(isset($_POST['message']) AND !empty($_POST['message']) && isConnected())
+{
+	$msg = htmlspecialchars((string) $_POST['message']);
+	$sender = htmlspecialchars($_SESSION['username']);
+	$certif = 0;
+
+	if(isset($_SESSION['token']) AND !empty($_SESSION['token'])) {
+		$token = htmlspecialchars($_SESSION['token']);
+		$requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
+        $requser->execute(array($sender));
+        $result = $requser->rowcount();
+        if ($result == 1) { //l'utilisateur existe t-il ?
+            $user = $requser->fetch();
+            if($user[1] == $token) { //le token est-il bon ?
+            	//utilisateur certifié
+            	$certif=$user[0];
+            }
+        }
+	}
+	$msg = str_replace(" ", "§", $msg);
+	$msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
+
+	$reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
+	$reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
+	
+    header("Refresh:0");
+    exit();
 }
 
 ?>
@@ -61,7 +90,12 @@ if (isset($_POST["disconnect"])) {
             <section id="messages">
                 <?php include("printMessagesPart.php"); ?>
             </section>
-            <section></section>
+            <section id="sendNew">
+                <form method="post">
+                    <input type="text" id="mainInput" placeholder="Write your message here" name="message">
+                    <input type="submit" name="submitNewMessage" id="mainSubmit" value="/>">
+                </form>
+            </section>
         </main>
 
         <footer>

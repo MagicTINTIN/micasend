@@ -438,15 +438,15 @@ footer div span {
     border-radius: 8px;
     border: 1px solid transparent;
     background-clip: content-box;
-    background-color: var(--fgv);
+    background-color: var(--m3);
     transition: all 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     border-radius: 4px;
-    background-color: var(--fg);
+    background-color: var(--m2);
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background-color: var(--fgv);
+    background-color: var(--m4);
 }
