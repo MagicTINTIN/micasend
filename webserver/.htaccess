@@ -1,0 +1,19 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin https://cpoi.softplus.fr
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type"
+</IfModule>
+
+RewriteEngine On
+
+# If the request is for an existing directory, rewrite to its index.php
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*/?)$ $1index.php [L]
+
+# Serve any file directly if it exists (including files with any extension)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule . - [L]
+
+# If no file or directory matches, attempt to append .php and rewrite
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]

@@ -254,6 +254,74 @@ footer div span {
     text-decoration: underline;
 }
 
+/* MESSAGES */
+
+#messages {
+    height: 90%;
+    width: 100vw;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+.message {
+    margin-top: 20px;
+    /* width: fit-content; */
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.msgDatetime {
+    font-size: x-small;
+    color: var(--wv);
+}
+
+.msgAuthor {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.msgAuthorBadge {
+    font-size: smaller;
+    border-radius: 4px;
+    padding: 2px;
+    font-weight: normal;
+    background-color: var(--bg1);
+    transition: all 0.2s;
+}
+
+.msgAuthAdmin .msgAuthorBadge {
+    background-color: var(--re);
+}
+
+.msgAuthMod .msgAuthorBadge {
+    background-color: var(--be);
+}
+
+.msgAuthBot .msgAuthorBadge {
+    background-color: var(--bg1);
+}
+
+.msgAuthVerified .msgAuthorBadge {
+    background-color: var(--s3);
+}
+
+.msgAuthorBadge:hover {
+    filter: brightness(1.5);
+}
+
+.msgContent {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-radius: 10px;
+    padding: 5px;
+    background: linear-gradient(135deg, var(--m3), var(--m4));
+    width: fit-content;
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
+}
+
 /* CONNECTION FORM */
 
 #onlineVersionConnection {
