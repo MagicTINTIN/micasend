@@ -2,7 +2,7 @@
 
 function isConnected(): bool
 {
-    return isset($_SESSION["username"]) && isset($_SESSION["token"]);
+    return isset($_SESSION["username"]);// && isset($_SESSION["token"]);
 }
 
 function disconnect(): void

@@ -2,6 +2,18 @@
 // include_once("db.php");
 include_once("utils.php");
 
+if (isset($_POST["connect"]) && isset($_POST["username"])) {
+    $_SESSION["username"] = htmlspecialchars($_POST["username"]);
+}
+
+if (isset($_POST["token"])) {
+    $_SESSION["token"] = htmlspecialchars($_POST["token"]);
+}
+
+if (isset($_POST["disconnect"])) {
+    disconnect();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,11 +50,16 @@ include_once("utils.php");
     <?php
     if (isConnected()) { ?>
         <header>
-            <a href="./"></a>
+            <div>
+                <a href="./" id="titleLink">
+                    <img src="images/favicon.png" id="headerIcon">
+                    <h3>MicaSend</h3>
+                </a>
+            </div>
         </header>
         <main>
             <section id="messages">
-
+                <?php include("printMessagesPart.php"); ?>
             </section>
             <section></section>
         </main>
@@ -50,9 +67,11 @@ include_once("utils.php");
         <footer>
             <div>
                 <form method="post">
+                    <span><?php echo $_SESSION["username"] ?></span>
+                    <span>|</span>
                     <input type="submit" name="disconnect" value="Log out">
                 </form>
-                <span id="onlineVersion">[WEB] MicaSend - v1.0</span>
+                <span id="onlineVersion">MicaSend web 1.0</span>
             </div>
         </footer>
     <?php } else {
@@ -69,7 +88,7 @@ include_once("utils.php");
                     <input class="button" type="submit" name="connect" value="Log in">
                 </form>
             </div>
-            <span id="onlineVersionConnection">[WEB] MicaSend - v1.0</span>
+            <span id="onlineVersionConnection">MicaSend web 1.0</span>
         </section>
     <?php
     } ?>
