@@ -7,7 +7,7 @@
 body {
     width: 100vw;
     height: 100vh;
-    opacity: 0.8;
+    opacity: 1;
 
     color: var(--fg);
     transition: all 0.2s;
@@ -25,6 +25,10 @@ body {
     padding: 0;
     box-sizing: border-box;
     /* overflow-x: hidden; */
+}
+
+body * {
+    opacity: 1;
 }
 
 .buttonGroup {
@@ -194,6 +198,88 @@ footer div span {
     color: var(--fgv);
     text-decoration: underline;
 }
+
+#onlineVersionConnection {
+    font-size: small;
+}
+
+#connection {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#connectionBlock {
+    width: 100vw;
+    min-height: 50vh;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+#connectionBlock form {
+    min-width: 65vw;
+    max-width: 80vw;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-radius: min(5vh, 5vw);
+    background-color: var(--bg2);
+    padding: min(5vh, 5vw);
+}
+
+#connectImgDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    height: min(40vw, 40vh);
+    margin: auto;
+    margin-bottom: 2vh;
+}
+
+#connectionImg {
+    width: min(40vw, 40vh);
+    height: min(40vw, 40vh);
+}
+
+.input, .button {
+    width: 80%;
+    background: var(--bg1);
+    color: var(--w);
+    border: solid 0px var(--w);
+    border-radius: 10px;
+    padding: 6px;
+    transition: all 0.2s;
+    margin: auto;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.input {
+    text-align: center;
+}
+
+.input:hover, .input:active, .input:focus {
+    filter: brightness(0.8);
+}
+
+.button:hover {
+    filter: brightness(0.9);
+}
+
+::placeholder {
+    color: var(--wv);
+    opacity: 1; /* Firefox */
+  }
+  
+  ::-ms-input-placeholder { /* Edge 12 -18 */
+    color: var(--wv);
+  }
 
 /* ----------- SCROLLBAR ----------- */
 

@@ -6,6 +6,8 @@
     --m4: #423146;
     --m5: #291C2D;
     --m6: #110D12;
+    --m5a: #291C2DBB;
+    --m6a: #110D12BB;
     --s1: #8AFD67;
     --s2: #89C977;
     --s3: #577B4C;
@@ -41,6 +43,10 @@
     --svgh: brightness(1);
 }
 
+* {
+    box-sizing: border-box;
+}
+
 html {
     --s: 14px;
     /* control the size*/
@@ -54,5 +60,5 @@ html {
 }
 
 body {
-    background: linear-gradient(135deg, var(--m5), var(--m6));
+    background: linear-gradient(135deg, var(--m5a), var(--m6a));
 }
