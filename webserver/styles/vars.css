@@ -1,18 +1,30 @@
+/* https://colors.softplus.fr/?DB68FD-B477C9L-704C7B-423146-FDF967-C9C877L-464531-8AFD67-89C977L-577B4C-364631 */
 :root {
+    --m1: #DB68FD;
+    --m2: #B477C9;
+    --m3: #704C7B;
+    --m4: #423146;
+    --m5: #291C2D;
+    --m6: #110D12;
+    --s1: #8AFD67;
+    --s2: #89C977;
+    --s3: #577B4C;
+    --s4: #364631;
+    --t1: #FDF967;
+    --t2: #C9C877;
+    --t3: #C9C877;
+    --bg1: #78707B;
+    --bg2: #464646;
     --r: #FE3420;
     --rv: #FF7769;
     --re: #FE3420;
-    --g: #CEFE20;
-    --gv: #DCFF69;
+    --g: #8AFD67;
+    --gv: #9EFF80;
     --b: #207DFE;
-    --bt: #121415;
     --bv: #4572B1;
     --be: #4572B1;
-    --o: #FE8020;
-    --ot: #151412;
-    --ov: #FFA969;
-    --y: #FEC220;
-    --yv: #FFD469;
+    --y: #FDF967;
+    --yv: #FFFA80;
     --n: #1B1B1E;
     --nsv: #202024;
     --nno: #1B1B1E00;
@@ -29,16 +41,18 @@
     --svgh: brightness(1);
 }
 
-html, body {
-    --s: 14px; /* control the size*/
+html {
+    --s: 14px;
+    /* control the size*/
     --c1: var(--n);
     --c2: var(--nsv);
-    
+
     background:
-      repeating-conic-gradient(var(--c1) 0 25%,#0000 0 50%)
-       0 0/calc(4*var(--s)) calc(2*var(--s)),
-      conic-gradient(#0000 50%,var(--c2) 0)
-       calc(var(--s)/2) 0/calc(2*var(--s)) 1%,
-      radial-gradient(var(--c2) 70%,var(--c1) 72%)
-       0 0/var(--s) var(--s);
-  }
+        repeating-conic-gradient(var(--c1) 0 25%, #0000 0 50%) 0 0/calc(4*var(--s)) calc(2*var(--s)),
+        conic-gradient(#0000 50%, var(--c2) 0) calc(var(--s)/2) 0/calc(2*var(--s)) 1%,
+        radial-gradient(var(--c2) 70%, var(--c1) 72%) 0 0/var(--s) var(--s);
+}
+
+body {
+    background: linear-gradient(135deg, var(--m5), var(--m6));
+}

@@ -7,16 +7,7 @@
 body {
     width: 100vw;
     height: 100vh;
-    /* background-color: var(--bg); */
     opacity: 0.8;
-    /* background-size: 20px 20px, 20px 20px, 10px 10px, 10px 10px; */
-/* 
-    --s: 60px;
-
-    background:
-        repeating-conic-gradient(var(--n) 0 25%, #0000 0 50%) 0 0/calc(4*var(--s)) calc(2*var(--s)),
-        conic-gradient(#0000 50%, var(--nno) 0) calc(var(--s)/2) 0/calc(2*var(--s)) 1%,
-        radial-gradient(var(--nno) 70%, var(--n) 72%) 0 0/var(--s) var(--s); */
 
     color: var(--fg);
     transition: all 0.2s;
@@ -144,19 +135,40 @@ h1 {
     text-shadow: 0px 0px 5px var(--fg);
 }
 
+header, footer {
+    width: 100vw;
+    background: var(--bg2);
+}
+
 header {
     width: 100vw;
-    height: 10vh;
+    height: 7vh;
 }
 
 main {
-    width: 100vw;
-    height: 80vh;
+    height: 90vh;
     transition: all 0.2s;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-sizing: border-box;
+}
+
+footer {
+    height: 3vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+footer div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+footer div span {
+    font-size: 2.5vh;
 }
 
 .bottomLink {
