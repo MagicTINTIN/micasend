@@ -4,18 +4,26 @@ include_once("utils.php");
 
 if (isset($_POST["connect"]) && isset($_POST["username"])) {
     $_SESSION["username"] = htmlspecialchars($_POST["username"]);
-}
 
-if (isset($_POST["token"])) {
-    $_SESSION["token"] = htmlspecialchars($_POST["token"]);
+    if (isset($_POST["token"])) {
+        $_SESSION["token"] = htmlspecialchars($_POST["token"]);
+    }
+	
+    header("Refresh:0");
+    exit();
 }
 
 if (isset($_POST["disconnect"])) {
     disconnect();
 }
 
-if(isset($_POST['message']) AND !empty($_POST['message']) && isConnected())
+if(isset($_POST['message']) && isConnected())
 {
+    if (empty($_POST['message'])) {
+        header("Refresh:0");
+        exit();
+    }
+
 	$msg = htmlspecialchars((string) $_POST['message']);
 	$sender = htmlspecialchars($_SESSION['username']);
 	$certif = 0;
@@ -64,15 +72,15 @@ if(isset($_POST['message']) AND !empty($_POST['message']) && isConnected())
     <link rel="icon" type="image/x-icon" href="images/favicon.png">
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Micasend">
+    <meta property="og:title" content="MicaSend">
     <meta property="og:description" content="The future of online chatting!">
 
     <meta property="og:image" content="https://micasend.magictintin.fr/images/favicon.png">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:image:alt" content="Micasend's logo">
+    <meta property="og:image:alt" content="MicaSend's logo">
 
     <meta property="og:url" content="https://micasend.magictintin.fr/" />
-    <meta data-react-helmet="true" name="theme-color" content="#207DFE" />
+    <meta data-react-helmet="true" name="theme-color" content="#DB68FD" />
 </head>
 
 <body>
@@ -91,8 +99,8 @@ if(isset($_POST['message']) AND !empty($_POST['message']) && isConnected())
                 <?php include("printMessagesPart.php"); ?>
             </section>
             <section id="sendNew">
-                <form method="post">
-                    <input type="text" id="mainInput" placeholder="Write your message here" name="message">
+                <form method="post" id="mainForm">
+                    <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
                     <input type="submit" name="submitNewMessage" id="mainSubmit" value="/>">
                 </form>
             </section>

@@ -278,6 +278,7 @@ footer div span {
 .msgDatetime {
     font-size: x-small;
     color: var(--wv);
+    padding-left: 15px;
 }
 
 .msgAuthor {
@@ -317,12 +318,79 @@ footer div span {
 .msgContent {
     margin-top: 2px;
     margin-bottom: 2px;
-    border-radius: 10px;
-    padding: 5px;
+    border-radius: 20px;
+    border-top-left-radius: 3px;
+    padding: 15px;
     background: linear-gradient(135deg, var(--m3), var(--m4));
     width: fit-content;
     text-wrap: wrap;
     overflow-wrap: anywhere;
+}
+
+/* SUBMIT MESSAGE */
+
+#sendNew {
+    width: 100vw;
+    height: 10%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#mainForm {
+    width: 100%;
+    height: 100%;
+    padding: 1vh;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#mainInput {
+    display: block;
+    color: var(--fg);
+    width: calc(100% - 8vh);
+    height: 7vh;
+    font-size: 2vh;
+    padding: 2vh;
+    background-color: var(--bg2);
+    border: none;
+    transition: all 0.2s;
+    border-radius: 0.9vh;
+    /* box-sizing: bo-box; */
+    margin: 0;
+}
+
+#mainInput:active, 
+#mainInput:focus {
+    border: none;
+    filter:brightness(0.92);
+    outline: none;
+}
+
+#mainSubmit {
+    display: block;
+    width: 7vh;
+    height: 7vh;
+    font-size: 6vh;
+    font-weight: bold;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    color: var(--fg);
+    background: linear-gradient(0deg, var(--m2), var(--m1));
+
+    border-radius: 0.9vh;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+#mainSubmit:hover {
+    filter: brightness(1.2);
+}
+
+#mainSubmit:active {
+    filter: brightness(0.9);
 }
 
 /* CONNECTION FORM */
