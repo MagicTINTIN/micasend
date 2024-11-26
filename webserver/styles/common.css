@@ -321,7 +321,7 @@ footer div span {
     border-radius: 20px;
     border-top-left-radius: 3px;
     padding: 15px;
-    background: linear-gradient(135deg, var(--m3), var(--m4));
+    background: linear-gradient(135deg, var(--m2), var(--m3));
     width: fit-content;
     text-wrap: wrap;
     overflow-wrap: anywhere;

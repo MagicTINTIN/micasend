@@ -1,14 +1,14 @@
 <?php
 include "db.php";
 // http://127.0.0.1/micasend/web/msg.php?message=lol&sender=test
-if(isset($_GET['message']) AND !empty($_GET['message']) AND isset($_GET['sender']) AND !empty($_GET['sender']))
+if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQUEST['sender']) AND !empty($_REQUEST['sender']))
 {
-	$msg = htmlspecialchars((string) $_GET['message']);
-	$sender = htmlspecialchars($_GET['sender']);
+	$msg = htmlspecialchars((string) $_REQUEST['message']);
+	$sender = htmlspecialchars($_REQUEST['sender']);
 	$certif = 0;
 
-	if(isset($_GET['token']) AND !empty($_GET['token'])) {
-		$token = htmlspecialchars($_GET['token']);
+	if(isset($_REQUEST['token']) AND !empty($_REQUEST['token'])) {
+		$token = htmlspecialchars($_REQUEST['token']);
 		$requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
         $requser->execute(array($sender));
         $result = $requser->rowcount();

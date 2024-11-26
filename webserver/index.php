@@ -8,7 +8,7 @@ if (isset($_POST["connect"]) && isset($_POST["username"])) {
     if (isset($_POST["token"])) {
         $_SESSION["token"] = htmlspecialchars($_POST["token"]);
     }
-	
+
     header("Refresh:0");
     exit();
 }
@@ -17,36 +17,35 @@ if (isset($_POST["disconnect"])) {
     disconnect();
 }
 
-if(isset($_POST['message']) && isConnected())
-{
+if (isset($_POST['message']) && isConnected()) {
     if (empty($_POST['message'])) {
         header("Refresh:0");
         exit();
     }
 
-	$msg = htmlspecialchars((string) $_POST['message']);
-	$sender = htmlspecialchars($_SESSION['username']);
-	$certif = 0;
+    $msg = htmlspecialchars((string) $_POST['message']);
+    $sender = htmlspecialchars($_SESSION['username']);
+    $certif = 0;
 
-	if(isset($_SESSION['token']) AND !empty($_SESSION['token'])) {
-		$token = htmlspecialchars($_SESSION['token']);
-		$requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
+    if (isset($_SESSION['token']) and !empty($_SESSION['token'])) {
+        $token = htmlspecialchars($_SESSION['token']);
+        $requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
         $requser->execute(array($sender));
         $result = $requser->rowcount();
         if ($result == 1) { //l'utilisateur existe t-il ?
             $user = $requser->fetch();
-            if($user[1] == $token) { //le token est-il bon ?
-            	//utilisateur certifié
-            	$certif=$user[0];
+            if ($user[1] == $token) { //le token est-il bon ?
+                //utilisateur certifié
+                $certif = $user[0];
             }
         }
-	}
-	$msg = str_replace(" ", "§", $msg);
-	$msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
+    }
+    $msg = str_replace(" ", "§", $msg);
+    $msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
 
-	$reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
-	$reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
-	
+    $reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
+    $reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
+
     header("Refresh:0");
     exit();
 }
@@ -61,6 +60,7 @@ if(isset($_POST['message']) && isConnected())
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/vars.css">
     <link rel="stylesheet" href="./styles/common.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -99,10 +99,14 @@ if(isset($_POST['message']) && isConnected())
                 <?php include("printMessagesPart.php"); ?>
             </section>
             <section id="sendNew">
-                <form method="post" id="mainForm">
+                <!-- <form method="post" id="mainForm">
                     <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
                     <input type="submit" name="submitNewMessage" id="mainSubmit" value="/>">
-                </form>
+                </form> -->
+                <div id="mainForm">
+                    <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
+                    <button id="mainSubmit">/></button>
+                </div>
             </section>
         </main>
 
@@ -116,6 +120,122 @@ if(isset($_POST['message']) && isConnected())
                 <span id="onlineVersion">MicaSend web 1.0</span>
             </div>
         </footer>
+        <script>
+            let socket;
+            let tries = 0;
+
+            document.getElementById("mainSubmit").addEventListener("click", () => {
+                sendMicsendMessage();
+            });
+
+            function sendMicsendMessage() {
+                let text = document.getElementById("mainInput").value;
+                if (text == undefined || text.length == "" || text.length == 0) return;
+                fetch("./msg.php", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            'message': text,
+                            'sender': '<?php echo $_SESSION['username']; ?>',
+                            <?php if (isset($_SESSION['token']) && !empty($_SESSION['token'])) { ?> 'token': '<?php echo $_SESSION['token']; ?>'
+                            <?php } ?>
+                        })
+                    }).then(response => response.text())
+                    .then(data => {
+                        // console.log("FETCH RES:", data);
+                        sendMsg("new micasend message");
+                        document.getElementById("mainInput").value = "";
+                    })
+                    .catch(e => console.error("ERROR:", e));
+            }
+
+            const connect = function() {
+                // Return a promise, which will wait for the socket to open
+                return new Promise((resolve, reject) => {
+
+                    const socketUrl = `wss://magictintin.fr:8443`
+
+                    socket = new WebSocket(socketUrl);
+
+                    socket.onopen = (e) => {
+                        // Connection message
+                        // socket.send("new micasend message"
+                        //     //     JSON.stringify({
+                        //     //     "from": "micasend",
+                        //     //     "type": "load",
+                        //     //     "loaded": true
+                        //     // })
+                        // );
+                        // connection established
+                        resolve();
+                    }
+
+                    socket.onmessage = (data) => {
+                        console.log('websocket sent', data); // data.data
+                        if (data.data.includes("new message notification"))
+                            $('#messages').load('printMessagesPart.php');
+
+                        // sendMsg('playerQuit');
+                        // socket.close();
+                    }
+
+                    socket.onclose = (e) => {
+                        // Return an error if any occurs
+                        // console.log('Disconnected from websocket', e);
+                        console.log("Reconnecting to websocket...");
+                        $('#messages').load('printMessagesPart.php');
+                        setTimeout(() => {
+                            connect();
+                        }, 1000);
+                    }
+
+                    socket.onerror = (e) => {
+                        // Return an error if any occurs
+                        console.log(e);
+                        resolve();
+                        // Try to connect again
+                        if (tries < 3) {
+                            tries++;
+                            setTimeout(() => {
+                                connect();
+                            }, 1000);
+                        } else
+                            console.log("REFRESH THE PAGE");
+
+                    }
+                });
+            }
+
+            // check if a websocket is open
+            const isOpen = function(ws) {
+                return ws.readyState === ws.OPEN
+            }
+
+            // function sendMsg(type = 'ping') {
+            //     if (isOpen(socket)) {
+            //         socket.send(JSON.stringify({
+            //             "from": "micasend",
+            //             "type": type,
+            //             "senttime": Date.now()
+            //         }));
+            //         console.log(`${type} sent to server`);
+            //     }
+            // }
+
+            function sendMsg(message = 'ping') {
+                if (isOpen(socket)) {
+                    socket.send(message);
+                    console.log(`${message} sent to server`);
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // Connect to the websocket
+                connect();
+            });
+        </script>
     <?php } else {
     ?>
         <section id="connection">
