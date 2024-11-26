@@ -124,6 +124,12 @@ if (isset($_POST['message']) && isConnected()) {
             let socket;
             let tries = 0;
 
+            document.getElementById("mainInput").addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    document.getElementById("mainSubmit").click();
+                }
+            });
+
             document.getElementById("mainSubmit").addEventListener("click", () => {
                 sendMicsendMessage();
             });
@@ -173,7 +179,7 @@ if (isset($_POST['message']) && isConnected()) {
                     }
 
                     socket.onmessage = (data) => {
-                        console.log('websocket sent', data); // data.data
+                        // console.log('websocket sent', data); // data.data
                         if (data.data.includes("new message notification"))
                             $('#messages').load('printMessagesPart.php');
 
