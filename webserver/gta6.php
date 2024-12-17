@@ -2,20 +2,8 @@
 include_once("db.php");
 include_once("utils.php");
 
-if (isset($_POST["connect"]) && isset($_POST["username"])) {
-    $_SESSION["username"] = htmlspecialchars($_POST["username"]);
-
-    if (isset($_POST["token"])) {
-        $_SESSION["token"] = htmlspecialchars($_POST["token"]);
-    }
-
-    header("Refresh:0");
-    exit();
-}
-
-if (isset($_POST["disconnect"])) {
-    disconnect();
-}
+$username = isset($_GET["username"]) ? htmlspecialchars(str_replace(" ", "_", $_GET["username"])) : "notconnected";
+$username = substr($username, 0, 25);
 
 if (isset($_POST['message']) && isConnected()) {
     if (empty($_POST['message'])) {
@@ -24,26 +12,12 @@ if (isset($_POST['message']) && isConnected()) {
     }
 
     $msg = htmlspecialchars((string) $_POST['message']);
-    $msg = substr($msg, 0,1023);
-    $sender = htmlspecialchars($_SESSION['username']);
-    $sender = substr($sender, 0,25);
+    $sender = $username;
     $certif = 0;
 
-    if (isset($_SESSION['token']) and !empty($_SESSION['token'])) {
-        $token = htmlspecialchars($_SESSION['token']);
-        $requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
-        $requser->execute(array($sender));
-        $result = $requser->rowcount();
-        if ($result == 1) { //l'utilisateur existe t-il ?
-            $user = $requser->fetch();
-            if ($user[1] == $token) { //le token est-il bon ?
-                //utilisateur certifié
-                $certif = $user[0];
-            }
-        }
-    }
     $msg = str_replace(" ", "§", $msg);
     $msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
+    $msg = substr($msg, 0,1023);
 
     $reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
     $reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
@@ -61,12 +35,12 @@ if (isset($_POST['message']) && isConnected()) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/vars.css">
-    <link rel="stylesheet" href="./styles/common.css">
+    <link rel="stylesheet" href="./styles/commongta6.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>MicaSend<?php if (isConnected()) echo " - Connection" ?></title>
+    <title>MicaSend - GTA6 Interface</title>
 
     <meta name="author" content="MagicTINTIN,baptistereb">
     <meta name="description" content="The future of online chatting!">
@@ -86,11 +60,9 @@ if (isset($_POST['message']) && isConnected()) {
 </head>
 
 <body>
-    <?php
-    if (isConnected()) { ?>
         <header>
             <div>
-                <a href="./" id="titleLink">
+                <a href="./" id="titleLink" target="_blank">
                     <img src="images/favicon.png" id="headerIcon">
                     <h3>MicaSend</h3>
                 </a>
@@ -101,10 +73,6 @@ if (isset($_POST['message']) && isConnected()) {
                 <?php include("printMessagesPart.php"); ?>
             </section>
             <section id="sendNew">
-                <!-- <form method="post" id="mainForm">
-                    <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
-                    <input type="submit" name="submitNewMessage" id="mainSubmit" value="/>">
-                </form> -->
                 <div id="mainForm">
                     <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
                     <button id="mainSubmit">/></button>
@@ -115,11 +83,9 @@ if (isset($_POST['message']) && isConnected()) {
         <footer>
             <div>
                 <form method="post">
-                    <span><?php echo $_SESSION["username"] ?></span>
-                    <span>|</span>
-                    <input type="submit" name="disconnect" value="Log out">
+                    <span><?php echo $username ?></span>
                 </form>
-                <span id="onlineVersion">MicaSend web 1.0</span>
+                <span id="onlineVersion">MicaSend for Pear phone</span>
             </div>
         </footer>
         <script>
@@ -146,9 +112,7 @@ if (isset($_POST['message']) && isConnected()) {
                         },
                         body: new URLSearchParams({
                             'message': text,
-                            'sender': '<?php echo $_SESSION['username']; ?>',
-                            <?php if (isset($_SESSION['token']) && !empty($_SESSION['token'])) { ?> 'token': '<?php echo $_SESSION['token']; ?>'
-                            <?php } ?>
+                            'sender': '<?php echo $username; ?>'
                         })
                     }).then(response => response.text())
                     .then(data => {
@@ -245,24 +209,6 @@ if (isset($_POST['message']) && isConnected()) {
                 connect();
             });
         </script>
-    <?php } else {
-    ?>
-        <section id="connection">
-            <br>
-            <div id="connectionBlock">
-                <form method="post">
-                    <div id="connectImgDiv">
-                        <img src="images/icon.png" id="connectionImg">
-                    </div>
-                    <input class="input" type="text" id="username" name="username" placeholder="Username" required autocomplete="on">
-                    <input class="input" type="password" id="token" name="token" placeholder="Token (optional)" autocomplete="on">
-                    <input class="button" type="submit" name="connect" value="Log in">
-                </form>
-            </div>
-            <span id="onlineVersionConnection">MicaSend web 1.0</span>
-        </section>
-    <?php
-    } ?>
 </body>
 
 </html>
