@@ -72,6 +72,7 @@ if (isset($_POST['message']) && isConnected()) {
     <meta name="description" content="The future of online chatting!">
 
     <link rel="icon" type="image/x-icon" href="images/favicon.png">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="MicaSend">
