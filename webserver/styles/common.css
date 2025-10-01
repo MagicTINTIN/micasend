@@ -14,17 +14,19 @@ body {
     font-family: 'Courier New', Courier, monospace;
     font-size: large;
 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* overflow-x: hidden; */
+}
+
+.unselectable, .msgAuthor, .msgDatetime {
     user-drag: none;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-drag: none;
     -webkit-user-select: none;
     -ms-user-select: none;
-
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    /* overflow-x: hidden; */
 }
 
 body * {
@@ -273,6 +275,13 @@ footer div span {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    
+    user-select: text;
+    -moz-user-select: auto;
+    -webkit-user-drag: auto;
+    -webkit-user-select: auto;
+    -ms-user-select: auto;
+
 }
 
 .msgDatetime {
@@ -325,6 +334,13 @@ footer div span {
     width: fit-content;
     text-wrap: wrap;
     overflow-wrap: anywhere;
+
+    user-select: text;
+    -moz-user-select: auto;
+    -webkit-user-drag: auto;
+    -webkit-user-select: auto;
+    -ms-user-select: auto;
+
 }
 
 /* SUBMIT MESSAGE */
