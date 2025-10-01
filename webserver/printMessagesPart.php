@@ -12,7 +12,11 @@ foreach (array_reverse($result) as $key => $value) {
     $requser->execute(array($value["id_certified_user"]));
     $r = $requser->fetch();
 
+    #print_r($r);
+    #echo '<pre>'; print_r($r); echo '</pre>';
+
     echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\"><span class=\"msgAuthor ";
+    
     if ($r[1] > 0) {
         if ($r[1] == 15) {
             echo "msgAuthAdmin" . "\">" . "<span class=\"msgAuthorBadge\">ADMIN</span> " ;
@@ -30,6 +34,6 @@ foreach (array_reverse($result) as $key => $value) {
         echo "msgAuthNormal" . "\">" . "" ;
     }
     echo $value["sender"] . "</span><span class=\"msgContent\">";
-    echo htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $value["content"])));
+    echo htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $value["content"]))));
     echo "</span><span class=\"msgDatetime\">" . $value["date_time"] . "</span></div>";
 }
