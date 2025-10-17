@@ -236,7 +236,7 @@ if (isset($_POST['message']) && isConnected()) {
 
             function sendMsg(message = 'ping') {
                 if (isOpen(socket)) {
-                    socket.send(message);
+                    socket.send(`micasend:${message}`);
                     console.log(`${message} sent to server`);
                 }
             }
