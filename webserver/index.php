@@ -158,7 +158,10 @@ if (isset($_POST['message']) && isConnected()) {
                         document.getElementById("mainInput").value = "";
                     })
                     .catch(e => console.error("ERROR:", e));
-            }
+	    }
+
+	    number_unread_messages = 0;
+	    hidden_window = document.hidden;
 
             const connect = function() {
                 // Return a promise, which will wait for the socket to open
@@ -187,6 +190,10 @@ if (isset($_POST['message']) && isConnected()) {
                         if (data.data.includes("new message notification"))
                             $('#messages').load('printMessagesPart.php');
 
+			number_unread_messages++;
+			if (document.hidden || hidden_window) {
+				document.title = "(" + number_unread_messages + ") MicaSend";
+			}
                         // sendMsg('playerQuit');
                         // socket.close();
                     }
@@ -233,6 +240,9 @@ if (isset($_POST['message']) && isConnected()) {
             //         console.log(`${type} sent to server`);
             //     }
             // }
+
+	    window.onfocus = () => {number_unread_messages=0; document.title = "MicaSend"; hidden_window = false};
+	    window.onblur = () => hidden_window = true;
 
             function sendMsg(message = 'ping') {
                 if (isOpen(socket)) {
