@@ -183,6 +183,7 @@ if (isset($_POST['message']) && isConnected()) {
                         // );
                         // connection established
                         resolve();
+			sendMsg("ping");
                     }
 
                     socket.onmessage = (data) => {
