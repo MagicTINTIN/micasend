@@ -26,7 +26,7 @@ if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQU
 	$reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
 	$reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
 
-	file_get_contents(
+	@file_get_contents(
 		"http://127.0.0.1:6442/push",
 		false,
 		stream_context_create(['http' => [
