@@ -23,22 +23,29 @@ if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQU
         }
 	}
 
-	if ($msg == "/bix_honk") {
-		if ($isCertified) {
-			$msg = "HONK!";
+	if (str_starts_with($msg, "/")) {
+		if (!$isCertified) {
+			header('Location: msg.php');
+			exit;
+		}
+			
+		$commmand_list = [ 
+			"/bix_honk" => ["HONK", "bix/goto:horn"], 
+			"/bix_tts " => ["# " . substr($msg, 9), "bix/goto:tts>" . substr($msg, 9)], 
+		];
+
+		foreach ($commmand_list as $key => $value) {
+			if (!str_starts_with($msg, $key)) continue;
+			$msg = $value[0];
 			@file_get_contents(
 				"http://127.0.0.1:6442/push",
 				false,
 				stream_context_create(['http' => [
 					'method' => 'POST',
 					'header' => "Content-Type: text/plain\r\n",
-				'content' => "bix/goto:horn"
+					'content' => $value[1]
 				]])
 			);
-		} else {
-			$msg = "";
-			header('Location: msg.php');
-			exit;
 		}
 	}
 
