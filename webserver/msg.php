@@ -23,17 +23,23 @@ if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQU
         }
 	}
 
-	if ($msg == "/bix_honk" && $isCertified) {
-		$msg = "HONK!";
-		@file_get_contents(
-			"http://127.0.0.1:6442/push",
-			false,
-			stream_context_create(['http' => [
-				'method' => 'POST',
-				'header' => "Content-Type: text/plain\r\n",
-			'content' => "bix/goto:horn"
-			]])
-		);
+	if ($msg == "/bix_honk") {
+		if ($isCertified) {
+			$msg = "HONK!";
+			@file_get_contents(
+				"http://127.0.0.1:6442/push",
+				false,
+				stream_context_create(['http' => [
+					'method' => 'POST',
+					'header' => "Content-Type: text/plain\r\n",
+				'content' => "bix/goto:horn"
+				]])
+			);
+		} else {
+			$msg = "";
+			header('Location: msg.php');
+			exit;
+		}
 	}
 
 	$msg = str_replace(" ", "§", $msg);
