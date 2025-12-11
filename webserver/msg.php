@@ -6,6 +6,7 @@ if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQU
 	$msg = htmlspecialchars((string) $_REQUEST['message']);
 	$sender = htmlspecialchars($_REQUEST['sender']);
 	$certif = 0;
+	$isCertified = false;
 
 	if(isset($_REQUEST['token']) AND !empty($_REQUEST['token'])) {
 		$token = htmlspecialchars($_REQUEST['token']);
@@ -17,9 +18,24 @@ if(isset($_REQUEST['message']) AND !empty($_REQUEST['message']) AND isset($_REQU
             if($user[1] == $token) { //le token est-il bon ?
             	//utilisateur certifié
             	$certif=$user[0];
+				$isCertified = true;
             }
         }
 	}
+
+	if ($msg == "/bix_honk" && $isCertified) {
+		$msg = "HONK!";
+		@file_get_contents(
+			"http://127.0.0.1:6442/push",
+			false,
+			stream_context_create(['http' => [
+				'method' => 'POST',
+				'header' => "Content-Type: text/plain\r\n",
+			'content' => "bix/goto:horn"
+			]])
+		);
+	}
+
 	$msg = str_replace(" ", "§", $msg);
 	$msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
 
