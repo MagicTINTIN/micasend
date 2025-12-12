@@ -18,6 +18,7 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 			if ($user[1] == $token) { //le token est-il bon ?
 				//utilisateur certifié
 				$certif = $user[0];
+				$rank = $user[2];
 				$isCertified = true;
 			}
 		}
@@ -27,6 +28,12 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 		if (!$isCertified) {
 			header('Location: msg.php');
 			exit;
+		}
+
+		if ($rank < 16) {
+			// is in safe mode
+			$req = $db->prepare("SELECT * from msg WHERE (lower(content) LIKE '/safe ') DESC LIMIT 1;");
+			$result = $req->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		$commmand_list = [
