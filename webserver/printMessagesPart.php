@@ -18,7 +18,10 @@ foreach (array_reverse($result) as $key => $value) {
     echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\"><span class=\"msgAuthor ";
     
     if ($r && $r[1] > 0) {
-        if ($r[1] == 15) {
+        if ($r[1] == 16) {
+            echo "msgAuthOwner" . "\">" . "<span class=\"msgAuthorBadge\">OWNER</span> " ;
+        }
+        else if ($r[1] == 15) {
             echo "msgAuthAdmin" . "\">" . "<span class=\"msgAuthorBadge\">ADMIN</span> " ;
         }
         else if ($r[1] == 12) {

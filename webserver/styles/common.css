@@ -304,6 +304,10 @@ footer div span {
     transition: all 0.2s;
 }
 
+.msgAuthOwner .msgAuthorBadge {
+    background-color: var(--pe);
+}
+
 .msgAuthAdmin .msgAuthorBadge {
     background-color: var(--re);
 }
