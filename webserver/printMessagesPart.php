@@ -1,10 +1,13 @@
 <?php
 include_once("db.php");
 
-
 $req = $db->query("SELECT * FROM msg ORDER BY id DESC LIMIT 50");
 $result = $req->fetchAll(PDO::FETCH_ASSOC);
 $result = array_reverse($result);
+
+function msg_decode(string $content) : string {
+    return htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $content))));
+}
 
 foreach (array_reverse($result) as $key => $value) {
     //foreach message:
@@ -29,7 +32,16 @@ foreach (array_reverse($result) as $key => $value) {
     #print_r($r);
     #echo '<pre>'; print_r($r); echo '</pre>';
 
-    echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\"><span class=\"msgAuthor ";
+    echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\">";
+    if ($replyingTo > -1) {
+        $req = $db->prepare("SELECT sender, content FROM msg WHERE id = :id");
+        $req->execute(['id' => $replyingTo]);
+        $msgs = $req->fetchAll();
+        if (sizeof($msgs) > 0)
+            echo "<span class='replyingTo' title='". $msgs[0]["sender"] . " - ". msg_decode($msgs[0]["content"])."'>⤷<span class='replySender'>" . $msgs[0]["sender"] . "</span>" . msg_decode($msgs[0]["content"]) . "</span>";
+    }
+
+    echo "<span class=\"msgAuthor ";
 
     if ($r && $r[1] > 0) {
         if ($r[1] == 16) {
@@ -50,6 +62,6 @@ foreach (array_reverse($result) as $key => $value) {
     foreach ($styleProps as $_ => $s)
         echo " msgStyle" . ucfirst($s);
     echo "\">";
-    echo htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $value["content"]))));
-    echo "</span><span class=\"msgDatetime\">" . $value["date_time"] . "</span></div>";
+    echo msg_decode($value["content"]);
+    echo "</span><span class=\"msgDatetime\">" . (str_contains($_SERVER['QUERY_STRING'], "debug") ? ("[" . $value["id"] . "] ") : "") . $value["date_time"] . "</span></div>";
 }

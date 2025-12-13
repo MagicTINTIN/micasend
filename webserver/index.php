@@ -205,7 +205,7 @@ if (isset($_POST['message']) && isConnected()) {
                     socket.onmessage = (data) => {
                         // console.log('websocket sent', data); // data.data
                         if (data.data.includes("new message notification")) {
-                            $('#messages').load('printMessagesPart.php');
+                            $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>');
 
                             number_unread_messages++;
                             if (document.hidden || hidden_window) {
@@ -220,7 +220,7 @@ if (isset($_POST['message']) && isConnected()) {
                         // Return an error if any occurs
                         // console.log('Disconnected from websocket', e);
                         console.log("Reconnecting to websocket...");
-                        $('#messages').load('printMessagesPart.php');
+                        $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>');
                         setTimeout(() => {
                             connect();
                         }, 1000);

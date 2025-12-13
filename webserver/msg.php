@@ -49,6 +49,7 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 			"/bix_tts " => ["# " . strtoupper(substr($msg, 9)), "tts", 10, "bix/goto:tts>" . substr($msg, 9)],
 			"/safe " => [$msg, "hidden", 12, ""],
 			"/test " => [substr($msg, 6), "rainbow", 1, ""],
+			"/r " => [explode(' ', $msg, 3)[2], "r:" . explode(' ', $msg, 3)[1], 1, ""],
 		];
 
 		foreach ($commmand_list as $key => $value) {
