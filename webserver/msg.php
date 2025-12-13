@@ -37,23 +37,32 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 		}
 
 		$commmand_list = [
-			// "/cmd" => ["message sent in chat", min_level_permission, "websocket message"]
-			"/bix_honk" => ["HONK", "bix/goto:horn"],
-			"/bix_tts " => ["# " . strtoupper(substr($msg, 9)), "bix/goto:tts>" . substr($msg, 9)],
+			// "/cmd" => ["message sent in chat", "style", min_level_permission, "websocket message"]
+			"/bix_honk" => ["HONK", "shake", 10, "bix/goto:horn"],
+			"/bix_tts " => ["# " . strtoupper(substr($msg, 9)), "tts", 10, "bix/goto:tts>" . substr($msg, 9)],
+			"/safe " => [$msg, "hidden", 12, ""],
+			"/test " => [substr($msg, 6), "rainbow", 1, ""],
 		];
 
 		foreach ($commmand_list as $key => $value) {
 			if (!str_starts_with($msg, $key)) continue;
+
+			if ($rank < $value[2]) {
+				header('Location: msg.php');
+				exit;
+			}
+
 			$msg = $value[0];
-			@file_get_contents(
-				"http://127.0.0.1:6442/push",
-				false,
-				stream_context_create(['http' => [
-					'method' => 'POST',
-					'header' => "Content-Type: text/plain\r\n",
-					'content' => $value[1]
-				]])
-			);
+			if ($value[3] != "")
+				@file_get_contents(
+					"http://127.0.0.1:6442/push",
+					false,
+					stream_context_create(['http' => [
+						'method' => 'POST',
+						'header' => "Content-Type: text/plain\r\n",
+						'content' => $value[3]
+					]])
+				);
 
 			if ($msg == "") {
 				header('Location: msg.php');
