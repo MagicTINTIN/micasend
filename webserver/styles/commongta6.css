@@ -297,30 +297,35 @@ footer div span {
     font-weight: normal;
     background-color: var(--bg1);
     transition: all 0.2s;
+    cursor: pointer;
 }
 
-.msgAuthOwner .msgAuthorBadge {
+.msgAuthOwner .msgAuthorBadge, .userBadgeOwner {
     background-color: var(--pe);
 }
 
-.msgAuthAdmin .msgAuthorBadge {
+.msgAuthAdmin .msgAuthorBadge, .userBadgeAdmin {
     background-color: var(--re);
 }
 
-.msgAuthMod .msgAuthorBadge {
+.msgAuthMod .msgAuthorBadge, .userBadgeMod {
     background-color: var(--be);
 }
 
-.msgAuthBot .msgAuthorBadge {
+.msgAuthBot .msgAuthorBadge, .userBadgeBot {
     background-color: var(--bg1);
 }
 
-.msgAuthVerified .msgAuthorBadge {
+.msgAuthVerified .msgAuthorBadge, .userBadgeV {
     background-color: var(--s3);
 }
 
 .msgAuthorBadge:hover {
     filter: brightness(1.5);
+}
+
+.msgAuthorBadge:active {
+    filter: brightness(0.9);
 }
 
 .msgContent {

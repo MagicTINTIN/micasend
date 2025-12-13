@@ -7,7 +7,7 @@ function isConnected(): bool
 
 function disconnect(): void
 {
-    unset($_SESSION["username"], $_SESSION["token"]);
+    unset($_SESSION["username"], $_SESSION["token"], $_SESSION["rank"]);
     header("Refresh:0");
     exit();
 }

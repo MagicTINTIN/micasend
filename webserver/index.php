@@ -5,8 +5,18 @@ include_once("utils.php");
 if (isset($_POST["connect"]) && isset($_POST["username"])) {
     $_SESSION["username"] = htmlspecialchars($_POST["username"]);
 
-    if (isset($_POST["token"])) {
+    if (isset($_POST['token']) and !empty($_POST['token'])) {
         $_SESSION["token"] = htmlspecialchars($_POST["token"]);
+        $token = htmlspecialchars($_SESSION['token']);
+        $requser = $db->prepare("SELECT token, rank FROM user WHERE pseudo = ?");
+        $requser->execute(array($_SESSION["username"]));
+        $result = $requser->rowcount();
+        if ($result == 1) { //l'utilisateur existe t-il ?
+            $user = $requser->fetch();
+            if ($user[0] == $token) { //le token est-il bon ?
+                $_SESSION["rank"] = $user[1];
+            }
+        }
     }
 
     header("Refresh:0");
