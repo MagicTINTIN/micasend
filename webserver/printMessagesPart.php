@@ -11,32 +11,45 @@ foreach (array_reverse($result) as $key => $value) {
     $requser = $db->prepare("SELECT id, rank FROM user WHERE id = ?");
     $requser->execute(array($value["id_certified_user"]));
     $r = $requser->fetch();
+    $props = strlen($value["properties"]) > 0 ? explode(",", $value["properties"]) : [];
+    $styleProps = [];
+    $replyingTo = -1;
+    foreach ($props as $_ => $p) {
+        if ($p == "hidden") {
+            if (!isset($_SESSION["rank"]) || $_SESSION["rank"] < 1 || $_SESSION["username"] != $value["sender"])
+                continue 2;
+            else
+                array_push($styleProps, "hidden");
+        } elseif (str_starts_with($p, "r:"))
+            $replyingTo = (int) substr($p, 2);
+        elseif (str_starts_with($p, "s:"))
+            array_push($styleProps, substr($p, 2));
+    }
 
     #print_r($r);
     #echo '<pre>'; print_r($r); echo '</pre>';
 
     echo "<div class=\"message\" id=\"msgN" . $value["id"] . "\"><span class=\"msgAuthor ";
-    
+
     if ($r && $r[1] > 0) {
         if ($r[1] == 16) {
-            echo "msgAuthOwner" . "\">" . "<span class=\"msgAuthorBadge\">OWNER</span> " ;
-        }
-        else if ($r[1] == 15) {
-            echo "msgAuthAdmin" . "\">" . "<span class=\"msgAuthorBadge\">ADMIN</span> " ;
-        }
-        else if ($r[1] == 12) {
-            echo "msgAuthMod" . "\">" . "<span class=\"msgAuthorBadge\">MOD</span> " ;
-        }
-        else if ($r[1] == 11) {
-            echo "msgAuthBot" . "\">" . "<span class=\"msgAuthorBadge\">BOT</span> " ;
-        }
-        else {
-            echo "msgAuthVerified" . "\">" . "<span class=\"msgAuthorBadge\">v</span> " ;
+            echo "msgAuthOwner" . "\">" . "<span class=\"msgAuthorBadge\">OWNER</span> ";
+        } else if ($r[1] == 15) {
+            echo "msgAuthAdmin" . "\">" . "<span class=\"msgAuthorBadge\">ADMIN</span> ";
+        } else if ($r[1] == 12) {
+            echo "msgAuthMod" . "\">" . "<span class=\"msgAuthorBadge\">MOD</span> ";
+        } else if ($r[1] == 11) {
+            echo "msgAuthBot" . "\">" . "<span class=\"msgAuthorBadge\">BOT</span> ";
+        } else {
+            echo "msgAuthVerified" . "\">" . "<span class=\"msgAuthorBadge\">v</span> ";
         }
     } else {
-        echo "msgAuthNormal" . "\">" . "" ;
+        echo "msgAuthNormal" . "\">" . "";
     }
-    echo $value["sender"] . "</span><span class=\"msgContent\">";
+    echo $value["sender"] . "</span><span class=\"msgContent";
+    foreach ($styleProps as $_ => $s)
+        echo " msgStyle" . ucfirst($s);
+    echo "\">";
     echo htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $value["content"]))));
     echo "</span><span class=\"msgDatetime\">" . $value["date_time"] . "</span></div>";
 }

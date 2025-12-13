@@ -76,7 +76,7 @@ if (isset($_POST['message']) && isConnected()) {
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <title>MicaSend<?php if (isConnected()) echo " - Connection" ?></title>
+    <title>MicaSend<?php if (!isConnected()) echo " - Connection" ?></title>
 
     <meta name="author" content="MagicTINTIN,baptistereb">
     <meta name="description" content="The future of online chatting!">
@@ -126,7 +126,14 @@ if (isset($_POST['message']) && isConnected()) {
         <footer>
             <div>
                 <form method="post">
-                    <span><?php echo $_SESSION["username"] ?></span>
+                    <span><?php
+                            echo $_SESSION["username"];
+
+                            if (isset($_SESSION["rank"]) && $_SESSION["rank"] > 0) {
+                                $ranks = ["unverified", "V", "V", "V", "V", "V", "V", "V", "V", "V", "V", "BOT", "Mod", "SMod", "Dev", "Admin", "Owner"];
+                                echo " <span class='msgAuthorBadge userBadge" . $ranks[$_SESSION["rank"]] . "'>" . $ranks[$_SESSION["rank"]] . "</span>";
+                            }
+                            ?></span>
                     <span>|</span>
                     <input type="submit" name="disconnect" value="Log out">
                 </form>
@@ -285,7 +292,7 @@ if (isset($_POST['message']) && isConnected()) {
                     <input class="button" type="submit" name="connect" value="Log in">
                 </form>
             </div>
-            <span id="onlineVersionConnection">MicaSend web 1.0</span>
+            <span id="onlineVersionConnection">MicaSend web 1.2</span>
         </section>
     <?php
     } ?>

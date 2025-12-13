@@ -6,6 +6,7 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 	$sender = htmlspecialchars($_REQUEST['sender']);
 	$certif = 0;
 	$rank = 0;
+	$props = "";
 	$isCertified = false;
 
 	if (isset($_REQUEST['token']) and !empty($_REQUEST['token'])) {
@@ -43,7 +44,7 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 		}
 
 		$commmand_list = [
-			// "/cmd" => ["message sent in chat", "style", min_level_permission, "websocket message"]
+			// "/cmd" => ["message sent in chat", "property1,property2", min_level_permission, "websocket message"]
 			"/bix_honk" => ["HONK", "shake", 10, "bix/goto:horn"],
 			"/bix_tts " => ["# " . strtoupper(substr($msg, 9)), "tts", 10, "bix/goto:tts>" . substr($msg, 9)],
 			"/safe " => [$msg, "hidden", 12, ""],
@@ -57,6 +58,10 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 				header('Location: msg.php');
 				exit;
 			}
+
+			$props = isset($_REQUEST['prop']) ? htmlspecialchars($_REQUEST['prop']) : "";
+			if (strlen($value[1]) > 0)
+				$props = strlen($props) > 0 ? $props . "," . $value[1] : $value[1];
 
 			$msg = $value[0];
 			if ($value[3] != "")
@@ -80,8 +85,8 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 	$msg = str_replace(" ", "§", $msg);
 	$msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
 
-	$reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
-	$reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
+	$reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time, properties) VALUES(?, ?, ?, ?, ?)");
+	$reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time()), $props));
 
 	@file_get_contents(
 		"http://127.0.0.1:6442/push",
