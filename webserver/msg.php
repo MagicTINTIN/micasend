@@ -32,8 +32,14 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 
 		if ($rank < 16) {
 			// is in safe mode
-			$req = $db->prepare("SELECT * from msg WHERE (lower(content) LIKE '/safe ') DESC LIMIT 1;");
-			$result = $req->fetchAll(PDO::FETCH_ASSOC);
+			$req = $db->prepare("SELECT content FROM msg WHERE content LIKE '/safe%o%' ORDER BY id DESC LIMIT 1;");
+			$req->execute([]);
+			$result = $req->fetchAll();
+			// echo sizeof($result) . ">'". $result[0] ."' " . str_contains($result[0]['content'], "on");
+			if (sizeof($result) > 0 && str_contains($result[0]['content'], "on")) {
+				header('Location: msg.php');
+				exit;
+			}
 		}
 
 		$commmand_list = [

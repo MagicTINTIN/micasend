@@ -167,8 +167,7 @@ if (isset($_POST['message']) && isConnected()) {
                 // Return a promise, which will wait for the socket to open
                 return new Promise((resolve, reject) => {
 
-                    // const socketUrl = `wss://magictintin.fr:8443`
-                    const socketUrl = `wss://msws.magictintin.fr:8443`
+                    const socketUrl = `wss://magictintin.fr/ws`
 
                     socket = new WebSocket(socketUrl);
 
