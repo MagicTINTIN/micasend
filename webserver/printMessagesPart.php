@@ -9,6 +9,22 @@ function msg_decode(string $content) : string {
     return htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span", "</span>"), "", str_replace("§", " ", $content))));
 }
 
+function formatText($text) {
+    $text = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $text);
+    $text = preg_replace('/~~(.+?)~~/s', '<span class="linethrough">$1</span>', $text);
+    $text = preg_replace('/__(.+?)__/s', '<span class="underlined">$1</span>', $text);
+    $text = preg_replace('/\*(.+?)\*/s', '<span class="italic">$1</span>', $text);
+    $text = preg_replace('/_(.+?)_/s', '<span class="italic">$1</span>', $text);
+
+    return $text;
+}
+
+function mentionStyle($text) {
+    if (!isset($_SESSION["username"]))
+        return $text;
+    return str_replace("@".$_SESSION["username"], "<span class='mentionStyle'>@" . $_SESSION["username"] . "</span>", $text);
+}
+
 foreach (array_reverse($result) as $key => $value) {
     //foreach message:
     $requser = $db->prepare("SELECT id, rank FROM user WHERE id = ?");
@@ -64,6 +80,6 @@ foreach (array_reverse($result) as $key => $value) {
     echo "\">";
     if (in_array("tts", $styleProps))
         echo "<span class='ttsbox'>🕪 TTS</span>";
-    echo msg_decode($value["content"]);
+    echo formatText(mentionStyle(msg_decode($value["content"])));
     echo "</span><span class=\"msgDatetime\">" . (str_contains($_SERVER['QUERY_STRING'], "debug") ? ("[" . $value["id"] . "] ") : "") . $value["date_time"] . "</span></div>";
 }

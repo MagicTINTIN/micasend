@@ -1,3 +1,29 @@
+.italic {
+    font-style: italic;
+}
+
+.underlined {
+    text-decoration: underline;
+}
+
+.linethrough {
+    text-decoration: line-through;
+}
+
+.mentionStyle {
+    background-color: #ffff00;
+    color: black;
+    font-weight: 600;
+    padding: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.mentionStyle:hover {
+    background-color: #ffff5f;
+}
+
 .msgAuthorBadge {
     font-size: smaller;
     border-radius: 4px;
