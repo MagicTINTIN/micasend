@@ -15,6 +15,7 @@ function formatText($text) {
     $text = preg_replace('/__(.+?)__/s', '<span class="underlined">$1</span>', $text);
     $text = preg_replace('/\*(.+?)\*/s', '<span class="italic">$1</span>', $text);
     $text = preg_replace('/_(.+?)_/s', '<span class="italic">$1</span>', $text);
+    $text = preg_replace('/`(.+?)`/s', '<span class="codeStyle">$1</span>', $text);
 
     return $text;
 }

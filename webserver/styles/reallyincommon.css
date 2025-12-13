@@ -24,6 +24,13 @@
     background-color: #ffff5f;
 }
 
+.codeStyle {
+    background-color: #555555;
+    padding: 2px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
 .msgAuthorBadge {
     font-size: smaller;
     border-radius: 4px;
