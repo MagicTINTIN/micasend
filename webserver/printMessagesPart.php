@@ -6,7 +6,7 @@ $result = $req->fetchAll(PDO::FETCH_ASSOC);
 $result = array_reverse($result);
 
 function msg_decode(string $content) : string {
-    return htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span>", "</span>"), "", str_replace("§", " ", $content))));
+    return htmlspecialchars(htmlspecialchars_decode(str_replace(array("\\", "/", "<span", "</span>"), "", str_replace("§", " ", $content))));
 }
 
 foreach (array_reverse($result) as $key => $value) {
@@ -62,6 +62,8 @@ foreach (array_reverse($result) as $key => $value) {
     foreach ($styleProps as $_ => $s)
         echo " msgStyle" . ucfirst($s);
     echo "\">";
+    if (in_array("tts", $styleProps))
+        echo "<span class='ttsbox'>🕪 TTS</span>";
     echo msg_decode($value["content"]);
     echo "</span><span class=\"msgDatetime\">" . (str_contains($_SERVER['QUERY_STRING'], "debug") ? ("[" . $value["id"] . "] ") : "") . $value["date_time"] . "</span></div>";
 }

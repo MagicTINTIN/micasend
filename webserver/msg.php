@@ -26,10 +26,10 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 	}
 
 	if (str_starts_with($msg, "/")) {
-		if (!$isCertified) {
-			header('Location: msg.php');
-			exit;
-		}
+		// if (!$isCertified) {
+		// 	header('Location: msg.php');
+		// 	exit;
+		// }
 
 		if ($rank < 16) {
 			// is in safe mode
@@ -45,11 +45,11 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 
 		$commmand_list = [
 			// "/cmd" => ["message sent in chat", "property1,property2", min_level_permission, "websocket message"]
-			"/bix_honk" => ["HONK", "shake", 10, "bix/goto:horn"],
-			"/bix_tts " => ["# " . strtoupper(substr($msg, 9)), "tts", 10, "bix/goto:tts>" . substr($msg, 9)],
+			"/bix_honk" => ["HONK !", "s:shake,s:bold,s:title,s:honk", 10, "bix/goto:horn"],
+			"/bix_tts " => [strtoupper(substr($msg, 9)), "s:tts", 10, "bix/goto:tts>" . substr($msg, 9)],
 			"/safe " => [$msg, "hidden", 12, ""],
-			"/test " => [substr($msg, 6), "rainbow", 1, ""],
-			"/r " => [explode(' ', $msg, 3)[2], "r:" . explode(' ', $msg, 3)[1], 1, ""],
+			"/waw " => [substr($msg, 5), "s:rainbox", 1, ""],
+			"/r " => [explode(' ', $msg, 3)[2], "r:" . explode(' ', $msg, 3)[1], 0, ""],
 		];
 
 		foreach ($commmand_list as $key => $value) {
