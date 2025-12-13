@@ -1,4 +1,4 @@
-<?php
+<?php @session_start();
 include_once("db.php");
 
 $req = $db->query("SELECT * FROM msg ORDER BY id DESC LIMIT 50");

@@ -36,6 +36,7 @@ if (isset($_POST['message']) && isConnected()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/vars.css">
     <link rel="stylesheet" href="./styles/commongta6.css">
+    <link rel="stylesheet" href="./styles/reallyincommon.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">

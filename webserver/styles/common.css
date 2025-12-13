@@ -295,44 +295,6 @@ footer div span {
     font-weight: bold;
 }
 
-.msgAuthorBadge {
-    font-size: smaller;
-    border-radius: 4px;
-    padding: 2px;
-    font-weight: normal;
-    background-color: var(--bg1);
-    transition: all 0.2s;
-    cursor: pointer;
-}
-
-.msgAuthOwner .msgAuthorBadge, .userBadgeOwner {
-    background-color: var(--pe);
-}
-
-.msgAuthAdmin .msgAuthorBadge, .userBadgeAdmin {
-    background-color: var(--re);
-}
-
-.msgAuthMod .msgAuthorBadge, .userBadgeMod {
-    background-color: var(--be);
-}
-
-.msgAuthBot .msgAuthorBadge, .userBadgeBox {
-    background-color: var(--bg1);
-}
-
-.msgAuthVerified .msgAuthorBadge, .userBadgeVerified {
-    background-color: var(--s3);
-}
-
-.msgAuthorBadge:hover {
-    filter: brightness(1.5);
-}
-
-.msgAuthorBadge:active {
-    filter: brightness(0.9);
-}
-
 .msgContent {
     margin-top: 2px;
     margin-bottom: 2px;

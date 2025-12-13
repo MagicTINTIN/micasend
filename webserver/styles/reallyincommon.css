@@ -1,0 +1,66 @@
+.msgAuthorBadge {
+    font-size: smaller;
+    border-radius: 4px;
+    padding: 2px;
+    font-weight: normal;
+    background-color: var(--bg1);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.msgAuthOwner .msgAuthorBadge, .userBadgeOwner {
+    background-color: var(--pe);
+}
+
+.msgAuthAdmin .msgAuthorBadge, .userBadgeAdmin {
+    background-color: var(--re);
+}
+
+.msgAuthMod .msgAuthorBadge, .userBadgeMod {
+    background-color: var(--be);
+}
+
+.msgAuthBot .msgAuthorBadge, .userBadgeBox {
+    background-color: var(--bg1);
+}
+
+.msgAuthVerified .msgAuthorBadge, .userBadgeVerified {
+    background-color: var(--s3);
+}
+
+.msgAuthorBadge:hover {
+    filter: brightness(1.5);
+}
+
+.msgAuthorBadge:active {
+    filter: brightness(0.9);
+}
+
+.replyingTo {
+    font-size: small;
+    color: var(--wv);
+    padding-left: 15px;
+}
+
+.replySender {
+    padding: 2px;
+    border-radius: 5px;
+    margin: 2px;
+    background-color: rgba(255,255,255,.1);
+}
+
+.msgStyleHidden {
+    border: 4px dashed var(--m1);
+    background: var(--m4t);
+}
+
+.msgStyleHidden {
+    border: 4px dashed var(--m1);
+    background: var(--m4t);
+    transition: all 0.3s;
+}
+
+.msgStyleHidden:hover {
+    border: 4px dotted var(--m1);
+    background: var(--m2t);
+}
