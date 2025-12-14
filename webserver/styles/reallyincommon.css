@@ -1,3 +1,27 @@
+#replying {
+    display: none;
+    background-color: var(--m1);
+    font-size: small;
+    border-radius: 5px;
+    cursor: pointer;
+    position: fixed;
+    padding: 5px;
+    right: min(10px, 1vh);
+    bottom: 12vh;
+}
+
+.replyingToMsg {
+    background: linear-gradient(0deg, #DB68FD00 0,#DB68FD20 20%, #DB68FD20 80%, #DB68FD00 100%);
+}
+
+.replyingToMsg .replyButton {
+    background: var(--m2);
+}
+
+.replyingToMsg .msgContent {
+    box-shadow: var(--m2t) 4px 4px 8px 8px;
+}
+
 .italic {
     font-style: italic;
 }
@@ -39,6 +63,20 @@
     background-color: var(--bg1);
     transition: all 0.2s;
     cursor: pointer;
+}
+
+.replyButton {
+    background-color: #3a3a3a;
+    color: white;
+    font-size: x-small;
+    padding: 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 2px;
+}
+.replyButton:hover {
+    background-color: #757575;
 }
 
 .msgAuthOwner .msgAuthorBadge,
@@ -166,33 +204,33 @@
 }
 
 @property --rainbow_1 {
-  syntax: '<color>';
-  initial-value: #fb0094;
-  inherits: false;
+    syntax: '<color>';
+    initial-value: #fb0094;
+    inherits: false;
 }
 
 @property --rainbow_2 {
-  syntax: '<color>';
-  initial-value: #0000ff;
-  inherits: false;
+    syntax: '<color>';
+    initial-value: #0000ff;
+    inherits: false;
 }
 
 @property --rainbow_3 {
-  syntax: '<color>';
-  initial-value: #00ff00;
-  inherits: false;
+    syntax: '<color>';
+    initial-value: #00ff00;
+    inherits: false;
 }
 
 @property --rainbow_4 {
-  syntax: '<color>';
-  initial-value: #ffff00;
-  inherits: false;
+    syntax: '<color>';
+    initial-value: #ffff00;
+    inherits: false;
 }
 
 @property --rainbow_5 {
-  syntax: '<color>';
-  initial-value: #ff0000;
-  inherits: false;
+    syntax: '<color>';
+    initial-value: #ff0000;
+    inherits: false;
 }
 
 .msgStyleRainbox {

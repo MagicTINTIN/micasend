@@ -82,5 +82,7 @@ foreach (array_reverse($result) as $key => $value) {
     if (in_array("tts", $styleProps))
         echo "<span class='ttsbox'>🕪 TTS</span>";
     echo formatText(mentionStyle(msg_decode($value["content"])));
-    echo "</span><span class=\"msgDatetime\">" . (str_contains($_SERVER['QUERY_STRING'], "debug") ? ("[" . $value["id"] . "] ") : "") . $value["date_time"] . "</span></div>";
+    echo "</span>
+    <span class=\"msgDatetime\"><span class='replyButton' onclick='replyTo(\"". $value["id"] ."\",\"". $value["sender"] ."\")'>reply</span>" . (str_contains($_SERVER['QUERY_STRING'], "debug") ? ("[" . $value["id"] . "] ") : "") . $value["date_time"] . "</span>
+    </div>";
 }

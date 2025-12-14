@@ -83,6 +83,10 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 		}
 	}
 
+	if (isset($_REQUEST['replyID']) && !empty($_REQUEST['replyID']) > 0) {
+		$props = strlen($props) > 0 ? $props . "," . "r:" . htmlspecialchars($_REQUEST['replyID']) : "r:" . htmlspecialchars($_REQUEST['replyID']);
+	}
+
 	$msg = str_replace(" ", "§", $msg);
 	$msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
 

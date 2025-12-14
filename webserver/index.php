@@ -27,40 +27,7 @@ if (isset($_POST["disconnect"])) {
     disconnect();
 }
 
-if (isset($_POST['message']) && isConnected()) {
-    if (empty($_POST['message'])) {
-        header("Refresh:0");
-        exit();
-    }
-
-    $msg = htmlspecialchars((string) $_POST['message']);
-    $msg = substr($msg, 0, 1023);
-    $sender = htmlspecialchars($_SESSION['username']);
-    $sender = substr($sender, 0, 25);
-    $certif = 0;
-
-    if (isset($_SESSION['token']) and !empty($_SESSION['token'])) {
-        $token = htmlspecialchars($_SESSION['token']);
-        $requser = $db->prepare("SELECT id, token FROM user WHERE pseudo = ?");
-        $requser->execute(array($sender));
-        $result = $requser->rowcount();
-        if ($result == 1) { //l'utilisateur existe t-il ?
-            $user = $requser->fetch();
-            if ($user[1] == $token) { //le token est-il bon ?
-                //utilisateur certifié
-                $certif = $user[0];
-            }
-        }
-    }
-    $msg = str_replace(" ", "§", $msg);
-    $msg = preg_replace('/[\x00-\x1F\x7F]/u', '', $msg);
-
-    $reqins = $db->prepare("INSERT INTO msg(content, sender, id_certified_user, date_time) VALUES(?, ?, ?, ?)");
-    $reqins->execute(array($msg, $sender, $certif, date("Y-m-d H:i:s", time())));
-
-    header("Refresh:0");
-    exit();
-}
+// include_once("postingMessage.php");
 
 ?>
 <!DOCTYPE html>
@@ -117,7 +84,10 @@ if (isset($_POST['message']) && isConnected()) {
                     <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
                     <input type="submit" name="submitNewMessage" id="mainSubmit" value="/>">
                 </form> -->
+                <span id="replying" onclick="replyTo('','');">Replying to ...</span>
+
                 <div id="mainForm">
+                    <input type="hidden" name="replyID" value="" id="replyToInput">
                     <input type="text" id="mainInput" placeholder="Write your message here" name="message" autocomplete="off" autofocus="yes">
                     <button id="mainSubmit">/></button>
                 </div>
@@ -138,7 +108,7 @@ if (isset($_POST['message']) && isConnected()) {
                     <span>|</span>
                     <input type="submit" name="disconnect" value="Log out">
                 </form>
-                <span id="onlineVersion">MicaSend web 1.0</span>
+                <span id="onlineVersion">MicaSend web 1.2</span>
             </div>
         </footer>
         <script>
@@ -165,6 +135,7 @@ if (isset($_POST['message']) && isConnected()) {
                         },
                         body: new URLSearchParams({
                             'message': text,
+                            'replyID': document.getElementById("replyToInput").value,
                             'sender': '<?php echo $_SESSION['username']; ?>',
                             <?php if (isset($_SESSION['token']) && !empty($_SESSION['token'])) { ?> 'token': '<?php echo $_SESSION['token']; ?>'
                             <?php } ?>
@@ -174,6 +145,7 @@ if (isset($_POST['message']) && isConnected()) {
                         // console.log("FETCH RES:", data);
                         sendMsg("new micasend message");
                         document.getElementById("mainInput").value = "";
+                        replyTo("");
                     })
                     .catch(e => console.error("ERROR:", e));
             }
@@ -206,7 +178,7 @@ if (isset($_POST['message']) && isConnected()) {
                     socket.onmessage = (data) => {
                         // console.log('websocket sent', data); // data.data
                         if (data.data.includes("new message notification")) {
-                            $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>');
+                            $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>', () => currentlyReplyingTo());
 
                             number_unread_messages++;
                             if (document.hidden || hidden_window) {
@@ -221,7 +193,7 @@ if (isset($_POST['message']) && isConnected()) {
                         // Return an error if any occurs
                         // console.log('Disconnected from websocket', e);
                         console.log("Reconnecting to websocket...");
-                        $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>');
+                        $('#messages').load('printMessagesPart.php<?php echo str_contains($_SERVER['QUERY_STRING'], "debug") ? "?debug" : "" ?>', () => currentlyReplyingTo());
                         setTimeout(() => {
                             connect();
                         }, 1000);
@@ -278,6 +250,28 @@ if (isset($_POST['message']) && isConnected()) {
                 // Connect to the websocket
                 connect();
             });
+
+            function replyTo(idMsg, author = "") {
+                if (idMsg) {
+                    if (document.getElementById("replyToInput").value)
+                        document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
+                    document.getElementById("msgN" + idMsg).classList.add("replyingToMsg");
+                    document.getElementById("mainInput").placeholder = "Write your reply here";
+                    document.getElementById("replying").innerText = "replying to " + author;
+                    document.getElementById("replying").style.display = "block";
+                } else {
+                    document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
+
+                    document.getElementById("mainInput").placeholder = "Write your message here";
+                    document.getElementById("replying").style.display = "none";
+                }
+                document.getElementById("replyToInput").value = idMsg;
+            }
+
+            function currentlyReplyingTo() {
+                if (document.getElementById("replyToInput").value)
+                    document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.add("replyingToMsg");
+            }
         </script>
     <?php } else {
     ?>
