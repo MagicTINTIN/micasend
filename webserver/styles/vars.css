@@ -1,9 +1,12 @@
 /* https://colors.softplus.fr/?DB68FD-B477C9L-704C7B-423146-FDF967-C9C877L-464531-8AFD67-89C977L-577B4C-364631 */
 :root {
     --m1: #DB68FD;
+    --m1t: #e89cff55;
     --m2: #B477C9;
+    --m2ev: #afac62;
     --m2t: #B477C955;
     --m3: #704C7B;
+    --m3ev: #595233;
     --m3t: #704C7B55;
     --m4: #423146;
     --m4t: #65496b55;

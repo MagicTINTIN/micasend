@@ -252,6 +252,7 @@ if (isset($_POST["disconnect"])) {
             });
 
             function replyTo(idMsg, author = "") {
+                if (document.getElementById("replyToInput").value == idMsg) idMsg = "";
                 if (idMsg) {
                     if (document.getElementById("replyToInput").value)
                         document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");

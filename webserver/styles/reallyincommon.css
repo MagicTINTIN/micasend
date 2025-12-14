@@ -10,8 +10,13 @@
     bottom: 12vh;
 }
 
+.msgEnAvant {
+    box-shadow: var(--t1) 1px 1px 3px 3px;
+    background: linear-gradient(135deg, var(--m2ev), var(--m3ev));
+}
+
 .replyingToMsg {
-    background: linear-gradient(0deg, #DB68FD00 0,#DB68FD20 20%, #DB68FD20 80%, #DB68FD00 100%);
+    background: linear-gradient(0deg, #DB68FD00 0, #DB68FD20 20%, #DB68FD20 80%, #DB68FD00 100%);
 }
 
 .replyingToMsg .replyButton {
@@ -75,6 +80,7 @@
     transition: all 0.3s;
     margin-right: 2px;
 }
+
 .replyButton:hover {
     background-color: #757575;
 }
@@ -123,6 +129,13 @@
     border-radius: 5px;
     margin: 2px;
     background-color: rgba(255, 255, 255, .1);
+}
+
+.replyToMe {
+    padding: 2px;
+    border-radius: 5px;
+    margin: 2px;
+    background-color: rgba(213, 195, 64, 0.3);
 }
 
 .msgStyleHidden {
@@ -276,7 +289,8 @@
         width: calc(100% - 12px);
         height: calc(100% - 12px);
         /* background: white; */
-        background: linear-gradient(135deg, var(--m2), var(--m3));
+        /* background: linear-gradient(135deg, var(--m2), var(--m3)); */
+        background: #000;
         border-radius: 20px;
         border-top-left-radius: 3px;
     }
