@@ -46,6 +46,7 @@ if (isset($_REQUEST['message']) and !empty($_REQUEST['message']) and isset($_REQ
 		$commmand_list = [
 			// "/cmd" => ["message sent in chat", "property1,property2", min_level_permission, "websocket message"]
 			"/bix_honk" => ["HONK !", "s:shake,s:bold,s:title,s:honk", 10, "bix/goto:horn"],
+			"/bix_stop" => ["Stopping car", "hidden", 15, "bix/goto:stopgoto"],
 			"/bix_tts " => [strtoupper(substr($msg, 9)), "s:tts", 10, "bix/goto:tts>" . substr($msg, 9)],
 			"/safe " => [$msg, "hidden", 12, ""],
 			"/waw " => [substr($msg, 5), "s:rainbox", 1, ""],
