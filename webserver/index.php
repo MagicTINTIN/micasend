@@ -254,13 +254,14 @@ if (isset($_POST["disconnect"])) {
             function replyTo(idMsg, author = "") {
                 if (document.getElementById("replyToInput").value == idMsg) idMsg = "";
                 if (idMsg) {
-                    if (document.getElementById("replyToInput").value)
+                    if (document.getElementById("replyToInput").value && document.getElementById("msgN" + document.getElementById("replyToInput").value))
                         document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
                     document.getElementById("msgN" + idMsg).classList.add("replyingToMsg");
                     document.getElementById("mainInput").placeholder = "Write your reply here";
                     document.getElementById("replying").innerText = "replying to " + author;
                     document.getElementById("replying").style.display = "block";
-                } else {
+		} else {
+		    if (document.getElementById("msgN" + document.getElementById("replyToInput").value))
                     document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
 
                     document.getElementById("mainInput").placeholder = "Write your message here";
