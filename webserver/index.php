@@ -4,10 +4,13 @@ include_once("utils.php");
 
 include_once("cestmoi/main.php");
 
-if (isset($_POST["connect_with_who"])) {
+if (isset($_REQUEST["connect_with_who"])) {
     if ($_USER)
         $userid = $_USER["id"];
     else {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $_SERVER['REQUEST_URI'] =  $path . "?connect_with_who";
+        
         $qsj  = new QsjAuth(require __DIR__ . '/cestmoi/qsj-config.php');
         $user = $qsj->requireAuth();
         $userid = $user["id"];
@@ -22,6 +25,11 @@ if (isset($_POST["connect_with_who"])) {
         $_SESSION["token"] = htmlspecialchars($user["token"]);
         $_SESSION["rank"] = $user["rank"];
     }
+
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+    header("Location: " . $path);
+    exit();
 }
 
 if (isset($_POST["connect"]) && isset($_POST["username"]) && strlen($_POST["username"]) > 0) {

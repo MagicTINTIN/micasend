@@ -447,6 +447,10 @@ footer div span {
     margin-bottom: 3px;
 }
 
+.button {
+    cursor: pointer;
+}
+
 .input {
     text-align: center;
 }
