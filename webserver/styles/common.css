@@ -472,6 +472,20 @@ footer div span {
     color: var(--wv);
 }
 
+.whoquisuisje_login {
+    text-decoration: none;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.whoquisuisje {
+    color: white;
+    background-color: #5c0d0d;
+    font-weight: bold;
+    border-radius: 6px;
+    padding: 3px;
+}
+
 /* ----------- SCROLLBAR ----------- */
 
 ::-webkit-scrollbar {

@@ -1,0 +1,3 @@
+[submodule "webserver/cestmoi"]
+	path = webserver/cestmoi
+	url = git@github.com:MagicTINTIN/cestmoi.git

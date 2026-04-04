@@ -2,6 +2,21 @@
 include_once("db.php");
 include_once("utils.php");
 
+include_once("cestmoi/main.php");
+
+if (!isConnected() && $_USER) {
+
+    $requser = $db->prepare("SELECT * FROM user WHERE quisuisje_id = ?");
+    $requser->execute(array($_USER["id"]));
+    $result = $requser->rowcount();
+    if ($result == 1) { //l'utilisateur existe t-il ?
+        $user = $requser->fetch();
+        $_SESSION["username"] = htmlspecialchars($user["pseudo"]);
+        $_SESSION["token"] = htmlspecialchars($user["token"]);
+        $_SESSION["rank"] = $user["rank"];
+    }
+}
+
 if (isset($_POST["connect"]) && isset($_POST["username"])) {
     $_SESSION["username"] = htmlspecialchars($_POST["username"]);
 
@@ -108,7 +123,7 @@ if (isset($_POST["disconnect"])) {
                     <span>|</span>
                     <input type="submit" name="disconnect" value="Log out">
                 </form>
-                <span id="onlineVersion">MicaSend web 1.2</span>
+                <span id="onlineVersion">MicaSend web 1.3</span>
             </div>
         </footer>
         <script>
@@ -286,9 +301,10 @@ if (isset($_POST["disconnect"])) {
                     <input class="input" type="text" id="username" name="username" placeholder="Username" required autocomplete="on">
                     <input class="input" type="password" id="token" name="token" placeholder="Token (optional)" autocomplete="on">
                     <input class="button" type="submit" name="connect" value="Log in">
+                    <a href="<?php echo $_QSJ->loginUrl() ?>" class="whoquisuisje_login button">Log in with <span class="whoquisuisje">Who</span> account</a>
                 </form>
             </div>
-            <span id="onlineVersionConnection">MicaSend web 1.2</span>
+            <span id="onlineVersionConnection">MicaSend web 1.3</span>
         </section>
     <?php
     } ?>
