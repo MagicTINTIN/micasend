@@ -484,6 +484,28 @@ footer div span {
     font-weight: bold;
     border-radius: 6px;
     padding: 3px;
+    transition: all 0.2s;
+}
+
+.whoquisuisje_login:hover .whoquisuisje {
+    background-color: #a51616;
+    background: linear-gradient(to bottom, #a51616 0%, white 20%, #a51616 40%);
+    background-position: 0% -100%;
+    background-size: 200% 200%;
+    animation: shine 1s;
+}
+
+
+@keyframes shine {
+  0% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% -100%;
+  }
+  /* 100% {
+    background-position: 0% 100%;
+  } */
 }
 
 /* ----------- SCROLLBAR ----------- */

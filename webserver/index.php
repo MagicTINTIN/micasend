@@ -4,10 +4,17 @@ include_once("utils.php");
 
 include_once("cestmoi/main.php");
 
-if (!isConnected() && $_USER) {
+if (isset($_POST["connect_with_who"])) {
+    if ($_USER)
+        $userid = $_USER["id"];
+    else {
+        $qsj  = new QsjAuth($config);
+        $user = $qsj->requireAuth();
+        $userid = $user["id"];
+    }
 
     $requser = $db->prepare("SELECT * FROM user WHERE quisuisje_id = ?");
-    $requser->execute(array($_USER["id"]));
+    $requser->execute(array($userid));
     $result = $requser->rowcount();
     if ($result == 1) { //l'utilisateur existe t-il ?
         $user = $requser->fetch();
@@ -17,7 +24,7 @@ if (!isConnected() && $_USER) {
     }
 }
 
-if (isset($_POST["connect"]) && isset($_POST["username"])) {
+if (isset($_POST["connect"]) && isset($_POST["username"]) && strlen($_POST["username"]) > 0) {
     $_SESSION["username"] = htmlspecialchars($_POST["username"]);
 
     if (isset($_POST['token']) and !empty($_POST['token'])) {
@@ -298,10 +305,10 @@ if (isset($_POST["disconnect"])) {
                     <div id="connectImgDiv">
                         <img src="images/icon.png" id="connectionImg">
                     </div>
-                    <input class="input" type="text" id="username" name="username" placeholder="Username" required autocomplete="on">
+                    <input class="input" type="text" id="username" name="username" placeholder="Username" autocomplete="on">
                     <input class="input" type="password" id="token" name="token" placeholder="Token (optional)" autocomplete="on">
                     <input class="button" type="submit" name="connect" value="Log in">
-                    <a href="<?php echo $_QSJ->loginUrl() ?>" class="whoquisuisje_login button">Log in with <span class="whoquisuisje">Who</span> account</a>
+                    <button type="submit" name="connect_with_who" class="whoquisuisje_login button">Log in with <span class="whoquisuisje">Who</span> account</button>
                 </form>
             </div>
             <span id="onlineVersionConnection">MicaSend web 1.3</span>
