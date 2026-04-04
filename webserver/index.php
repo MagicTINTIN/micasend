@@ -8,7 +8,7 @@ if (isset($_POST["connect_with_who"])) {
     if ($_USER)
         $userid = $_USER["id"];
     else {
-        $qsj  = new QsjAuth($config);
+        $qsj  = new QsjAuth(require __DIR__ . '/cestmoi/qsj-config.php');
         $user = $qsj->requireAuth();
         $userid = $user["id"];
     }
