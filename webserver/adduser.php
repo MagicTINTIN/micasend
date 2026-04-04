@@ -1,15 +1,6 @@
 <?php
 include "db.php";
-
-function RandomString()
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $randstring = '';
-    for ($i = 0; $i < 30; $i++) {
-        $randstring .= $characters[rand(0, strlen($characters))];
-    }
-    return $randstring;
-}
+include_once("utils.php");
 
 // exemple : 
 // adduser.php?insert=lenomducompte&rank=0&elon=quelquechose_ici_implique_elon_certif&adminpseudo=Rubiks&admintoken=1234

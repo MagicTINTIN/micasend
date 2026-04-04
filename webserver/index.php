@@ -24,10 +24,18 @@ if (isset($_REQUEST["connect_with_who"])) {
         $_SESSION["username"] = htmlspecialchars($user["pseudo"]);
         $_SESSION["token"] = htmlspecialchars($user["token"]);
         $_SESSION["rank"] = $user["rank"];
+    } else {
+        // auto create micasend verified account
+        $newtoken = createFromWhoAccount($db, $_USER["id"], $_USER["username"]);
+
+        if ($newtoken != "") {
+            $_SESSION["username"] = $_USER["username"];
+            $_SESSION["token"] = $newtoken;
+            $_SESSION["rank"] = 1;
+        }
     }
 
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
     header("Location: " . $path);
     exit();
 }
@@ -138,7 +146,7 @@ if (isset($_POST["disconnect"])) {
                     <span>|</span>
                     <input type="submit" name="disconnect" value="Log out">
                 </form>
-                <span id="onlineVersion">MicaSend web 1.3</span>
+                <span id="onlineVersion">MicaSend web 1.4</span>
             </div>
         </footer>
         <script>
@@ -320,7 +328,7 @@ if (isset($_POST["disconnect"])) {
                     <button type="submit" name="connect_with_who" class="whoquisuisje_login button">Log in with <span class="whoquisuisje">Who</span> account</button>
                 </form>
             </div>
-            <span id="onlineVersionConnection">MicaSend web 1.3</span>
+            <span id="onlineVersionConnection">MicaSend web 1.4</span>
         </section>
     <?php
     } ?>
