@@ -10,7 +10,7 @@ if (isset($_REQUEST["connect_with_who"])) {
     else {
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $_SERVER['REQUEST_URI'] =  $path . "?connect_with_who";
-        
+
         $qsj  = new QsjAuth(require __DIR__ . '/cestmoi/qsj-config.php');
         $user = $qsj->requireAuth();
         $userid = $user["id"];
@@ -80,6 +80,7 @@ if (isset($_POST["disconnect"])) {
     <link rel="stylesheet" href="./styles/reallyincommon.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
+    <?php cestmoi_setup_head(); ?>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     <title>MicaSend<?php if (!isConnected()) echo " - Connection" ?></title>
@@ -182,6 +183,17 @@ if (isset($_POST["disconnect"])) {
                     .then(data => {
                         // console.log("FETCH RES:", data);
                         sendMsg("new micasend message");
+                        <?php if ($_USER && !has_achievement("micasender")) { ?>
+                            fetch("./get_achievement.php", {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                    },
+                                    body: new URLSearchParams({})
+                                }).then(response => response.text())
+                                .catch(e => console.error("ERROR:", e));
+                        <?php } ?>
+
                         document.getElementById("mainInput").value = "";
                         replyTo("");
                     })
@@ -298,9 +310,9 @@ if (isset($_POST["disconnect"])) {
                     document.getElementById("mainInput").placeholder = "Write your reply here";
                     document.getElementById("replying").innerText = "replying to " + author;
                     document.getElementById("replying").style.display = "block";
-		} else {
-		    if (document.getElementById("msgN" + document.getElementById("replyToInput").value))
-                    document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
+                } else {
+                    if (document.getElementById("msgN" + document.getElementById("replyToInput").value))
+                        document.getElementById("msgN" + document.getElementById("replyToInput").value).classList.remove("replyingToMsg");
 
                     document.getElementById("mainInput").placeholder = "Write your message here";
                     document.getElementById("replying").style.display = "none";
@@ -331,7 +343,9 @@ if (isset($_POST["disconnect"])) {
             <span id="onlineVersionConnection">MicaSend web 1.4</span>
         </section>
     <?php
-    } ?>
+    }
+    cestmoi_setup_foot();
+    ?>
 </body>
 
 </html>
